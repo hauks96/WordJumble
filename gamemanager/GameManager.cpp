@@ -15,6 +15,8 @@
 #include "../words/WordReader.h"
 #include "../words/WordReader.cpp"
 #include "../words/GuessWord.h"
+#include "../outputmanager/OutputManager.h"
+#include "../outputmanager/OutputManager.cpp"
 
 GameManager::GameManager() {
     this->score.init_score(this->settings);

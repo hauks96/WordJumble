@@ -13,7 +13,6 @@
 #include "../gametype/GuessToSeven.h"
 #include "../words/WordReader.h"
 #include "../outputmanager/OutputManager.h"
-#include "../outputmanager/OutputManager.cpp"
 class GameManager {
 
 public:

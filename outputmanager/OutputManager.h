@@ -19,6 +19,8 @@ class OutputManager {
     friend void replace_lives(char** frames, int lives);
     // Set the empty default frame
     friend void set_empty_default(char** frames);
+    // Prints the frame
+    friend void print_frame(char** frames);
 public:
     // initialize the class with default values
     void _init_output_manager(GameType& game_type);
@@ -28,12 +30,15 @@ public:
     void end();
     // Prints the in game view
     void play(char* scrambled_word, int score, double mp, int lives);
+    // Updates with new lives
+    void updateLives(int lives);
     // Prints a message with the current frame
     void add_message(char* message);
     // Switch game
     void switch_game(GameType& game_type);
 private:
     void reset_frames();
+    bool inGame;
     char** frame;       // The current display
     char* current_game; // String defines the name of the current game
     int idx_start_score;
