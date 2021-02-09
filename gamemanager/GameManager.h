@@ -12,8 +12,8 @@
 #include "../gametype/GuessUntilZero.h"
 #include "../gametype/GuessToSeven.h"
 #include "../words/WordReader.h"
-#include "../inputmanager/OutputManager.h"
-#include "../inputmanager/OutputManager.cpp"
+#include "../outputmanager/OutputManager.h"
+#include "../outputmanager/OutputManager.cpp"
 class GameManager {
 
 public:
