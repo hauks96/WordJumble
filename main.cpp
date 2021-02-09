@@ -43,5 +43,10 @@ int main(){
     std::cout << "The scrambled word is: " << (game_manager.words.latest_word->scrambled_word) << std::endl;
      */
     game_manager.user.start();
+    char input_buffer[128];
+    std::cin >> input_buffer;
+    if (strcmp("Q", input_buffer)==0){
+
+    }
     return 0;
 }

@@ -6,6 +6,8 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include "GuessWord.h"
 #define MAX_FILENAME 64
 #define MAX_LINE_LENGTH 256
@@ -21,7 +23,8 @@ void scramble_helper(char* word, char*scrambled_word, int line_size){
     std::srand(std::time(nullptr)); // use time as random seed
     int rand_idx;
     for (int i=line_size-1; i>0; i--){
-        rand_idx = rand() % (i+1);
+        rand_idx = (rand() % (i+1));
+        //std::cout << "Random index: " << rand_idx << std::endl;
         swap(&scrambled_word[i], &scrambled_word[rand_idx]);
     }
     bool equal = true;
@@ -64,7 +67,8 @@ char* scramble_word(char* word, int line_size){
     if (!has_one_correct){
         std::cout << "Didn't have one correct." << std::endl;
         // Add one correct character
-        int rand_correct_char = rand() % (line_size); // length-1 for idx
+        int rand_correct_char = (rand() % (line_size)); // length-1 for idx
+        //std::cout << "Random correct char: " << rand_correct_char << std::endl;
         char scrambled_char = scrambled_word[rand_correct_char];
 
         // find the correct char position in array
@@ -231,10 +235,19 @@ void WordReader::init_word_reader(char* default_wordlist) {
     this->latest_word = nullptr;
 
     char filename[]="word_lists";
-    int num_lines[1];
+    char line_buffer[MAX_LINE_LENGTH];
+    int num_lines=0;
     std::ifstream* f_in_prt = get_filestream(filename); // Must be deleted
     std::ifstream& f_in = *f_in_prt; // Automatically removed when method returns
-    const char ** word_lists = new const char* [num_lines[0]];
+    while(true){
+        if (f_in.eof()){
+            break;
+        }
+        f_in.getline(line_buffer, MAX_LINE_LENGTH);
+        num_lines++;
+        std::cout << "Num lines: " << num_lines << std::endl;
+    }
+    char ** word_lists = new char* [num_lines];
     int line_cnt = 0;
     // adding the file names to the word_lists array
     while(true){
@@ -268,18 +281,20 @@ int WordReader::availableWordListSize() const {
 }
 
 // Get the name of the word lists available
-const char ** WordReader::availableWordLists() const {
+char ** WordReader::availableWordLists() const {
     return this->available_word_lists;
 }
 
 // Fetch a new word
 void WordReader::fetchWord() {
     // Remove the last word fetched
+    std::cout << "Trying to fetch" << std::endl;
     if (this->latest_word != nullptr){
         delete this->latest_word->scrambled_word;
         delete this->latest_word->word;
         delete this->latest_word->correct_letters;
         delete this->latest_word;
+        std::cout << "Trying to delete nulls" << std::endl;
     }
     // Resize array if word count exceeds array size
     if (this->read_lines_content_size==this->read_lines_size){
@@ -309,7 +324,8 @@ void WordReader::fetchWord() {
     }
     std::srand(std::time(nullptr)); // use time as random seed
     // get random line number to get word from
-    int rand_line = rand() % (this->file_line_count - this->read_lines_content_size);
+    int rand_line = (rand() % (this->file_line_count - this->read_lines_content_size));
+    //std::cout << "Trying to fetch rand num " << rand_line <<std::endl;
     int line_size[1]; // Retrieves the size of the line
     char* rand_word = read_line_number_x(this->current_wordlist, rand_line, line_size);
 
@@ -394,7 +410,8 @@ void WordReader::addHint() {
             return;
         }
         std::srand(std::time(nullptr)); // use time as random seed
-        int rand_left_right = rand() % 2; // 0 or 1
+        int rand_left_right = (rand() % 2); // 0 or 1
+        //std::cout << "Random left right: " << rand_left_right << std::endl;
         if (rand_left_right==0){
             for (int i=this->latest_word->word_size-1; i>-1; i--){
                 if (!this->latest_word->correct_letters[i]){

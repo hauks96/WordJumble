@@ -10,7 +10,7 @@ class WordReader {
     friend std::ifstream& get_filestream(WordReader& self, char* filename);
     friend void load_file_presets(WordReader& self);
     friend char* read_line(std::ifstream& f_in, char* filename, int line_number);
-    friend char* read_line_number_x(char* current_worldlist, int line_number);
+    friend char* read_line_number_x(char* current_wordlist, int line_number, int* line_length);
     friend void scramble_helper(char* word, char*scrambled, int line_size);
     friend void swap_correct_char(GuessWord& guessword, int index);
     friend void update_correct_words(GuessWord& wr);
@@ -21,7 +21,7 @@ public:
     // Get the name of the current wordlist
     char* currentWordList() const;
     // Get the available word lists
-    const char** availableWordLists() const;
+    char** availableWordLists() const;
     // Get size of available word list
     int availableWordListSize() const;
     // Get a single GuessWord
@@ -38,7 +38,7 @@ private:
     int read_lines_content_size; // The size of the content in read_lines array
     int file_line_count; // Size of the current wordlist in lines
     char* current_wordlist; // The word list file currently in use
-    const char** available_word_lists; // The available word lists
+    char** available_word_lists; // The available word lists
     int available_word_lists_size; // Size of the available word lists
 };
 

@@ -25,3 +25,7 @@ GameManager::GameManager() {
     this->type = init_type;
     this->user._init_output_manager(*init_type);
 }
+
+void GameManager::play(){
+
+}

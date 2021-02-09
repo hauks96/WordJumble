@@ -23,20 +23,24 @@ public:
     GameType* type;
     Score score;
     Timer time;
-    // Guess the current word
-    void guess();
-    // Get a hint on the current word
-    void getHint();
-    // Switch to a different game mode
+    // Switch to a different game mode (start menu)
     void switchGameMode();
-    // Start the program
+    // Start the program (start menu)
     void start();
     // Quit the program
     void end();
-    // Restart the game
-    void restart();
-    // Play a game
+    // Guess the current word (in game)
+    void guess();
+    // Get a hint on the current word (in game)
+    void getHint();
+    // Play a game (in game)
     void play();
+    // Restart the game (restart current game mode)
+    void restart();
+    // Word Lists (word list menu)
+    void selectWordList();
+    // View highscores (highscore menu)
+    void highscores();
 };
 
 

@@ -9,6 +9,8 @@
 class OutputManager {
     // Add a string to the center of a given row in the frame
     friend void replace_centered(char** frames, char* replacement, int replacement_size, int row);
+    // Add a string given a position
+    friend void replace_fixed(char* row_frame, char* replacement, int replacement_size, int replacement_start_index);
     // Update the score in the frame
     friend void replace_score(char** frames, int score);
     // Update the current game
@@ -19,6 +21,8 @@ class OutputManager {
     friend void replace_lives(char** frames, int lives);
     // Set the empty default frame
     friend void set_empty_default(char** frames);
+    // Set completely empty
+    friend void set_empty(char** frames);
     // Prints the frame
     friend void print_frame(char** frames);
 public:
@@ -29,21 +33,20 @@ public:
     // Prints the quit message
     void end();
     // Prints the in game view
-    void play(char* scrambled_word, int score, double mp, int lives);
+    void play(GuessWord& gw, int score, double mp, int lives);
     // Updates with new lives
     void updateLives(int lives);
     // Prints a message with the current frame
     void add_message(char* message);
     // Switch game
     void switch_game(GameType& game_type);
+    // Switch wordlist
+    void word_lists(char** word_lists, char* current_wordlist, int word_lists_size);
 private:
     void reset_frames();
     bool inGame;
     char** frame;       // The current display
     char* current_game; // String defines the name of the current game
-    int idx_start_score;
-    int idx_start_lives;
-    int idx_start_multiplier;
 };
 
 #endif //HW2_OUTPUTMANAGER_H
