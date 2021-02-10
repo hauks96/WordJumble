@@ -7,7 +7,7 @@
 #include <iostream>
 int main(){
     WordReader word_reader;
-    char default_word_list[] = "../../programming";
+    char default_word_list[] = "../../test";
     word_reader.init_word_reader(default_word_list);
     word_reader.fetchWord();
     std::cout << word_reader.latest_word->word << std::endl;

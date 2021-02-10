@@ -30,6 +30,7 @@ void scramble_helper(char* word, char*scrambled_word, int line_size){
         scrambled_word[i]=scrambled_word[rand_idx];
         scrambled_word[rand_idx]=temp_a;
     }
+    /*
     bool equal = true;
     // Scramble until the arrays are not equal
     while(true){
@@ -49,7 +50,7 @@ void scramble_helper(char* word, char*scrambled_word, int line_size){
         else{
             break;
         }
-    }
+    }*/
 }
 
 // Scramble a word and return it as a new array
@@ -189,66 +190,41 @@ char* read_line(std::ifstream& f_in, char* filename, int line_number){
 
 // Read a specific line in the currently selected word file
 char* read_line_number_x(WordReader& self, int line_number, int* line_length){
-    char temp_filename[MAX_FILENAME];
-    int cnt = 0;
-    // Add .txt to the name of the file
-    while(true) {
-        char curr_char = self.current_wordlist[cnt];
-        if (curr_char == '\0') {
-            temp_filename[cnt] = '.';
-            temp_filename[cnt + 1] = 't';
-            temp_filename[cnt + 2] = 'x';
-            temp_filename[cnt + 3] = 't';
-            temp_filename[cnt + 4] = '\0';
-            break;
-        }
-        temp_filename[cnt] = curr_char;
-        if (cnt + 5 > MAX_FILENAME - 1) {
-            std::cout << "WARNING: Filename exceeded the limit of " << MAX_FILENAME
-                      << " characters. Cannot read file" << std::endl;
-            throw std::runtime_error("Filename too large.");
-        }
-        cnt++;
-    }
     // Try to open the file
-    std::ifstream* f_in_ptr = new std::ifstream();
-    f_in_ptr->open(temp_filename, std::ios::in);
-    if (!f_in_ptr->is_open()){
-        std::cout << "WARNING: File with name " << temp_filename << " is not located in the words directory or does not exist." << std::endl;
-        throw std::runtime_error("File does not exist.");
-    }
-    //std::ifstream* f_in_ptr = get_filestream(self.current_wordlist);
+    std::ifstream* f_in_ptr = get_filestream(self.current_wordlist);
     std::ifstream& f_in = *f_in_ptr;
     int line_ctn = 0;
-    int line_size = 0;
     char line_buffer[MAX_LINE_LENGTH];
-    char char_buffer[1];
     std::cout << "WANT TO READ LINE NUMBER: "<< line_number << std::endl;
     while(true){
         // If the next line to read is the one we are looking for
         if (line_ctn==line_number){
-            while(true){
-                // If we're at end of line create new array and return it
-                if (char_buffer[0]=='\0' || char_buffer[0]=='\n' || f_in.eof()){
-                    char_buffer[line_size]='\0';
-                    char* new_line = new char[line_size];
-                    for (int j=0; j<line_size; j++){
-                        new_line[j]=line_buffer[j];
-                    }
-                    std::cout << "ACTUAL LINE SIZE: " << line_size << std::endl;
-                    line_length[0]=line_size-1;
-                    f_in.close();
-                    delete f_in_ptr;
-                    return new_line;
+            // If we're at end of line create new array and return it
+            f_in.getline(line_buffer, MAX_LINE_LENGTH);
+            std::cout << "Line target: " << line_buffer << std::endl;
+            int line_size=0;
+            for(int i=0; i<MAX_LINE_LENGTH; i++){
+                if (line_buffer[i]=='\0' || line_buffer[i]=='\n'){
+                    line_size = i+1;
+                    line_buffer[i]='\0';
+                    break;
                 }
-                // Not at end of line yet so we add char to line
-                f_in.read(char_buffer, 1);
-                line_buffer[line_size]=char_buffer[0];
-                line_size++;
             }
+            char* new_line = new char[line_size];
+            for (int j=0; j<line_size; j++){
+                new_line[j]=line_buffer[j];
+            }
+
+            std::cout << "ACTUAL LINE SIZE: " << line_size << std::endl;
+            line_length[0]=line_size-1;
+            f_in.close();
+            delete f_in_ptr;
+            return new_line;
         }
+
         // read lines until we are at the desired line
         f_in.getline(line_buffer, MAX_LINE_LENGTH);
+        std::cout << "Line: " << line_buffer << std::endl;
         line_ctn++;
     }
     std::cout << "Unexpected error while trying to fetch new word." << std::endl;
