@@ -239,11 +239,10 @@ void OutputManager::start() {
     replace_centered(this->frame, exit, 8, exit_row);
     replace_centered(this->frame, word_list, 20, wordlist_row);
     replace_game(this->frame, this->current_game);
-    this->add_message(msg);
-    print_frames(this->frame);
+    this->add_message(msg, true);
 }
 
-void OutputManager::play(GuessWord& gw, char* current_game_mode, int score, double mp, int lives) {
+void OutputManager::play(char* current_game_mode, GuessWord& gw, int score, double mp, int lives, bool print) {
     /*0 " -------------------------------------------------------------------------- "
       1 "|  GAME MODE:                                               SCORE: 0       |"
       2 "|                                                           LIVES: 10      |"
@@ -255,7 +254,7 @@ void OutputManager::play(GuessWord& gw, char* current_game_mode, int score, doub
       8 "|                                Hint (H)                                  |"
       9 "|                              Guess word (G)                              |"
      10 "|                                                                          |"
-     11 "|                               Main Menu (Q)                              |"
+     11 "|                               Main Menu (B)                              |"
      12 "|--------------------------------------------------------------------------|"
      13 "|                           MESSAGES COME HERE                             |"
      14 " -------------------------------------------------------------------------- " */
@@ -271,7 +270,7 @@ void OutputManager::play(GuessWord& gw, char* current_game_mode, int score, doub
         char guess_word[] = "Guess word (G)";
         int guess_word_row = 9;
         replace_centered(this->frame, guess_word, 14, guess_word_row);
-        char main_menu[] = "Main Menu (Q)";
+        char main_menu[] = "Main Menu (B)";
         int main_menu_row = 11;
         replace_centered(this->frame, main_menu, 14, main_menu_row);
     }
@@ -282,21 +281,23 @@ void OutputManager::play(GuessWord& gw, char* current_game_mode, int score, doub
     replace_game(this->frame, current_game_mode);
     replace_word(this->frame, gw);
     this->inGame=true;
-    print_frames(this->frame);
+    if (print){
+        print_frames(this->frame);
+    }
 }
 
 void OutputManager::switch_game(GameType &game_type) {
     if (this->inGame){
         char msg[]="Cannot switch game while playing.";
-        this->add_message(msg);
-        print_frames(this->frame);
+        this->add_message(msg, true);
+        return;
     }
     this->current_game = game_type.name();
     replace_game(this->frame, this->current_game);
     print_frames(this->frame);
 }
 
-void OutputManager::add_message(char *message) {
+void OutputManager::add_message(char *message, bool print) {
     strcpy(this->frame[MESSAGE_ROW], EMPTY_LINE);
     int msg_size = 0;
     char msg_char = message[0];
@@ -306,6 +307,9 @@ void OutputManager::add_message(char *message) {
         msg_char = message[msg_size];
     }
     replace_centered(this->frame, message, msg_size, MESSAGE_ROW);
+    if (print){
+        print_frames(this->frame);
+    }
 }
 
 void OutputManager::word_lists(char **word_lists, char *current_wordlist, int word_lists_size) {
@@ -369,4 +373,26 @@ void OutputManager::word_lists(char **word_lists, char *current_wordlist, int wo
     for (int i=11; i<SCREEN_HEIGHT; i++){
         cout << this->frame[i] << endl;
     }
+}
+
+void OutputManager::gameOver() {
+    int start_row = 5;
+    int end_row_plus_1 = 11;
+    strcpy(this->frame[4], EMPTY_LINE);
+    char title[]="GAME OVER!";
+    replace_centered(this->frame, title, 10, 4);
+    for (int i=start_row; i<end_row_plus_1; i++){
+        strcpy(this->frame[i], EMPTY_LINE);
+    }
+}
+
+void OutputManager::updateLives(int lives, bool print) {
+    replace_lives(this->frame, lives);
+    if (print){
+        print_frames(this->frame);
+    }
+}
+void OutputManager::updateMultiplier(double mp) {
+    replace_mp(this->frame, mp);
+    print_frames(this->frame);
 }

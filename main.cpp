@@ -11,47 +11,20 @@
 int main(){
 
     GameManager game_manager;
+    game_manager.start();
     /*
-    std::cout << game_manager.score.points << std::endl;
-    game_manager.time.reset_time();
-    std::cout << "Game type: " << game_manager.type->name() << std::endl;
-    std::cout << "Current wordlist: " << game_manager.words.currentWordList() << std::endl;
-    const char** wordlists = game_manager.words.availableWordLists();
-    std::cout << "Available size: " << game_manager.words.availableWordListSize() << std::endl;
-    for (int i=0; i<2; i++){
-        if (i==1){
-            std::cout << wordlists[i] << std::endl;
-        }
-        else{
-            std::cout << wordlists[i] << ", ";
-        }
-    }
-    game_manager.words.fetchWord();
-    std::cout << "The word is: " << (game_manager.words.latest_word->word) << std::endl;
-    std::cout << "The scrambled word is: " << (game_manager.words.latest_word->scrambled_word) << std::endl;
-    game_manager.words.addHint();
-    std::cout << "The scrambled word is: " << (game_manager.words.latest_word->scrambled_word) << std::endl;
-    game_manager.words.addHint();
-    std::cout << "The scrambled word is: " << (game_manager.words.latest_word->scrambled_word) << std::endl;
-    game_manager.words.addHint();
-    std::cout << "The scrambled word is: " << (game_manager.words.latest_word->scrambled_word) << std::endl;
-    game_manager.words.addHint();
-    std::cout << "The scrambled word is: " << (game_manager.words.latest_word->scrambled_word) << std::endl;
-    game_manager.words.addHint();
-    std::cout << "The scrambled word is: " << (game_manager.words.latest_word->scrambled_word) << std::endl;
-    game_manager.words.addHint();
-    std::cout << "The scrambled word is: " << (game_manager.words.latest_word->scrambled_word) << std::endl;
-     */
     game_manager.user.start();
     game_manager.words.fetchWord();
     std::cout << "Word is: " << game_manager.words.latest_word->word << std::endl;
     char input_buffer[128];
     std::cin >> input_buffer;
+
     if (strcmp("Q", input_buffer)==0){
         game_manager.user.play(*game_manager.words.latest_word,game_manager.type->name(), 0, 1, 10);
     }
     if (strcmp("W", input_buffer)==0){
         game_manager.user.word_lists(game_manager.words.availableWordLists(), game_manager.words.currentWordList(), game_manager.words.availableWordListSize());
     }
+     */
     return 0;
 }

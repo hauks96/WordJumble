@@ -14,7 +14,8 @@
 #include "../words/WordReader.h"
 #include "../outputmanager/OutputManager.h"
 class GameManager {
-
+    //friend void in_game_input(GameManager& gm);
+    friend bool checkGameOver(GameManager& gm);
 public:
     GameManager();
     GameSettings settings;
@@ -23,11 +24,13 @@ public:
     GameType* type;
     Score score;
     Timer time;
+    // Start the program
+    void __init__();
     // Switch to a different game mode (start menu)
     void switchGameMode();
-    // Start the program (start menu)
+    // Start menu
     void start();
-    // Quit the program
+    // Goodbye message
     void end();
     // Guess the current word (in game)
     void guess();
@@ -35,12 +38,17 @@ public:
     void getHint();
     // Play a game (in game)
     void play();
+    // Get the next word
+    void nextWord();
     // Restart the game (restart current game mode)
     void restart();
     // Word Lists (word list menu)
     void selectWordList();
     // View highscores (highscore menu)
     void highscores();
+
+private:
+    bool game_over;
 };
 
 

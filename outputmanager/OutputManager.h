@@ -35,11 +35,15 @@ public:
     // Prints the quit message
     void end();
     // Prints the in game view
-    void play(GuessWord& gw, char* current_game_mode, int score, double mp, int lives);
+    void play(char* current_game_mode, GuessWord& gw, int score, double mp, int lives, bool print);
+    // Print game over screen
+    void gameOver();
     // Updates with new lives
-    void updateLives(int lives);
+    void updateLives(int lives, bool print);
+    // Updates with new multiplier
+    void updateMultiplier(double mp);
     // Prints a message with the current frame
-    void add_message(char* message);
+    void add_message(char* message, bool print);
     // Switch game
     void switch_game(GameType& game_type);
     // Switch wordlist

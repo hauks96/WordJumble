@@ -16,7 +16,8 @@ void Score::init_score(GameSettings& settings) {
     this -> score_per_time_mp = settings.score_per_time_mp;
     this -> base_score = settings.word_base_score;
     this -> guessed_words = 0;
-    this -> multiplier = 0;
+    this -> current_score=0;
+    this -> multiplier = 1;
     this -> characters_corrected = 0;
 }
 
@@ -34,9 +35,14 @@ int Score::getCurrentScore() {
 
 void Score::updateScore(GuessWord &gw, Timer &timer) {
     // If time was within time limit increase multiplier and set score
+    std::cout << "Time elapsed: " << timer.elapsed_time() << std::endl;
+    std::cout << "Time limit: " << this->score_mp_time_limit << std::endl;
+    std::cout << "Multiplier: " << this->score_per_time_mp << std::endl;
+    std::cout << "After: " << this->multiplier * (double) this->score_per_time_mp << std::endl;
     if (timer.elapsed_time()<this->score_mp_time_limit){
-        this->multiplier *= this->score_per_time_mp;
-        this->current_score += this->multiplier*(this->base_score+((gw.word_size-gw.initially_correct_letters)*this->score_per_correct_char));
+        std::cout << "UPDATING!" << std::endl;
+        this->multiplier = this->multiplier * (double) this->score_per_time_mp;
+        this->current_score += this->multiplier * (this->base_score+((gw.word_size-gw.initially_correct_letters)*this->score_per_correct_char));
     }
     // Otherwise reset multiplier and set score
     else{
@@ -50,4 +56,12 @@ void Score::reset(){
     this->multiplier = 1;
     this->characters_corrected = 0;
     this -> guessed_words = 0;
+}
+
+int Score::getCurrentPoints() {
+    return this->points;
+}
+
+double Score::getCurrentMultiplier() {
+    return this->multiplier;
 }

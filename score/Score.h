@@ -19,6 +19,8 @@ public:
     // Update the score after a word is guessed correctly
     void updateScore(GuessWord& gw, Timer& timer);
     int getCurrentScore();
+    int getCurrentPoints();
+    double getCurrentMultiplier();
     int points;
     int guessed_words;
     int characters_corrected;
