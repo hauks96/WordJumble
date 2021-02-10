@@ -350,6 +350,7 @@ void WordReader::reset() {
     delete this->latest_word->word;
     delete this->latest_word->correct_letters;
     delete this->latest_word;
+    this->latest_word = nullptr;
     int* init_read_lines = new int[20];
     this->read_lines = init_read_lines;
 }

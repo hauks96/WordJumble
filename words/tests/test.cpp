@@ -28,6 +28,44 @@ int main(){
     if (!error){
         std::cout << "OK" << std::endl;
     }
+    /* CURRENT WORDLIST TEST */
+    error=false;
+    std::cout << "TESTING: WordList.currentWordList() - ";
+    if (strcmp(word_reader.currentWordList(), "test")!=0){
+        std::cout << "ERROR: Current wordlist was not 'test'. Got " << word_reader.currentWordList() << " instead." << std::endl;
+        error=true;
+    }
+    if (!error){
+        std::cout << "OK" << std::endl;
+    }
+
+    /* AVAILABLE WORD LIST SIZE TEST */
+    error=false;
+    std::cout << "TESTING: WordReader.availableWordListSize() - ";
+    if (word_reader.availableWordListSize()!=2){
+        std::cout << "ERROR: Available word list size was not 2" << std::endl;
+        error=true;
+    }
+    if (!error){
+        std::cout << "OK" << std::endl;
+    }
+
+    /* AVAILABLE WORD LISTS TEST */
+    error=false;
+    std::cout << "TESTING: WordReader.availableWordLists() - ";
+
+    char** available = word_reader.availableWordLists();
+    if (strcmp("test", available[0])!=0){
+        std::cout << "ERROR: First word list was not 'test'. Got " << available[0] << " instead." << std::endl;
+        error=true;
+    }
+    if (strcmp("test2", available[1])!=0){
+        std::cout << "ERROR: Second word list was not 'test2'. Got " << available[0] << " instead." << std::endl;
+        error=true;
+    }
+    if (!error){
+        std::cout << "OK" << std::endl;
+    }
 
     /* FETCH WORD TESTS */
     error=false;
@@ -92,5 +130,17 @@ int main(){
     if (!error){
         std::cout << "OK" << std::endl;
     }
+    /* RESET WORDLIST TEST */
+    error=false;
+    std::cout << "TESTING: WordReader.reset() - ";
+    word_reader.reset();
+    if (word_reader.latest_word != nullptr){
+        std::cout << "ERROR: Latest word is not null pointer after reset" << std::endl;
+        error=true;
+    }
+    if (!error){
+        std::cout << "OK" << std::endl;
+    }
+
     return 0;
 }
