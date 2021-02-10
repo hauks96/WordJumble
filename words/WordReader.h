@@ -10,7 +10,7 @@ class WordReader {
     friend std::ifstream& get_filestream(WordReader& self, char* filename);
     friend void load_file_presets(WordReader& self);
     friend char* read_line(std::ifstream& f_in, char* filename, int line_number);
-    friend char* read_line_number_x(char* current_wordlist, int line_number, int* line_length);
+    friend char* read_line_number_x(WordReader& self, int line_number, int* line_length);
     friend void scramble_helper(char* word, char*scrambled, int line_size);
     friend void swap_correct_char(GuessWord& guessword, int index);
     friend void update_correct_words(GuessWord& wr);

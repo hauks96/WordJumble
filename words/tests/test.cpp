@@ -10,6 +10,7 @@ int main(){
     char default_word_list[] = "../../programming";
     word_reader.init_word_reader(default_word_list);
     word_reader.fetchWord();
+    std::cout << word_reader.latest_word->word << std::endl;
     std::cout << "made it though" << std::endl;
     return 0;
 }
