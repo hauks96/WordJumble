@@ -62,6 +62,9 @@ void set_empty(char** frames){
         if (i==0 || i==SCREEN_HEIGHT-1){
             strcpy(frames[i], TOP_BOTTOM_BORDER);
         }
+        else if (i==MESSAGE_ROW-1){
+            strcpy(frames[i], MESSAGE_SEPARATOR);
+        }
         else {
             strcpy(frames[i], EMPTY_LINE);
         }
@@ -340,7 +343,7 @@ void OutputManager::word_lists(char **word_lists, char *current_wordlist, int wo
     replace_centered(this->frame, back, 8, back_row);
     // Message
     char msg[] = "ENTER NUMBER OF DESIRED LIST TO SELECT IT";
-    replace_centered(this->frame,msg, 28, MESSAGE_ROW);
+    replace_centered(this->frame,msg, get_string_size(msg), MESSAGE_ROW);
 
     int list_start_index_left = 10;
 
@@ -348,27 +351,19 @@ void OutputManager::word_lists(char **word_lists, char *current_wordlist, int wo
     for (int i=0; i<4; i++){
         cout << this->frame[i] << endl;
     }
-    // The rest until idx 11 is lists
-    for (int i=0; i<7; i++){
-        if (i>=word_lists_size){
-            break;
-        }
+    // Print each list item
+    for (int i=0; i<word_lists_size; i++){
+        char temp_frame[] = EMPTY_LINE;
         char buffer[5];
-        int size_num = sprintf(buffer, "%d. ", i);
-        replace_fixed(this->frame[i+4], buffer, size_num, list_start_index_left);
-        replace_fixed(this->frame[i+4], word_lists[i], get_string_size(word_lists[i]), list_start_index_left+size_num);
-        cout << this->frame[i] << endl;
+        int size_num = sprintf(buffer, "%d. ", i+1);
+        replace_fixed(temp_frame, buffer, size_num, list_start_index_left);
+        replace_fixed(temp_frame, word_lists[i], get_string_size(word_lists[i]), list_start_index_left+size_num);
+        cout << temp_frame << endl;
     }
-    // If there are too many lists print them as extras
-    if (word_lists_size>7){
-        int extra_rows = word_lists_size-7;
+    if (word_lists_size<7){
+        int extra_rows = 7-word_lists_size;
         for (int i=0; i<extra_rows; i++){
-            char tmp_row[] = EMPTY_LINE;
-            char buffer[5];
-            int size_num = sprintf(buffer, "%d. ", i);
-            replace_fixed(tmp_row, buffer, size_num, list_start_index_left);
-            replace_fixed(tmp_row, word_lists[7+i], get_string_size(word_lists[7+i]), list_start_index_left+size_num);
-            cout << tmp_row << endl;
+            cout << EMPTY_LINE << endl;
         }
     }
     for (int i=11; i<SCREEN_HEIGHT; i++){

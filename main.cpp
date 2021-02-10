@@ -50,5 +50,8 @@ int main(){
     if (strcmp("Q", input_buffer)==0){
         game_manager.user.play(*game_manager.words.latest_word,game_manager.type->name(), 0, 1, 10);
     }
+    if (strcmp("W", input_buffer)==0){
+        game_manager.user.word_lists(game_manager.words.availableWordLists(), game_manager.words.currentWordList(), game_manager.words.availableWordListSize());
+    }
     return 0;
 }
