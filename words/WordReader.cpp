@@ -12,16 +12,7 @@
 #define MAX_FILENAME 64
 #define MAX_LINE_LENGTH 256
 
-// Swap a with b in an array
-void swap(char* a, char* b){
-    char temp_a = *a;
-    *a = *b; // Set val of a as b
-    *b = temp_a; // Set val of b as a
-    std::cout << "SWAPPING" << std::endl;
-}
-
 void scramble_helper(char* word, char*scrambled_word, int line_size){
-    std::cout << "SWAPPING" << std::endl;
     std::srand(std::time(nullptr)); // use time as random seed
     int rand_idx;
     for (int i=line_size-1; i>0; i--){
@@ -55,7 +46,6 @@ void scramble_helper(char* word, char*scrambled_word, int line_size){
 
 // Scramble a word and return it as a new array
 char* scramble_word(char* word, int line_size){
-    std::cout << "LINE SIZE: " << line_size << std::endl;
     char* scrambled_word = new char[line_size+1];
     strcpy(scrambled_word, word);
     scramble_helper(word, scrambled_word, line_size);
@@ -195,13 +185,11 @@ char* read_line_number_x(WordReader& self, int line_number, int* line_length){
     std::ifstream& f_in = *f_in_ptr;
     int line_ctn = 0;
     char line_buffer[MAX_LINE_LENGTH];
-    std::cout << "WANT TO READ LINE NUMBER: "<< line_number << std::endl;
     while(true){
         // If the next line to read is the one we are looking for
         if (line_ctn==line_number){
             // If we're at end of line create new array and return it
             f_in.getline(line_buffer, MAX_LINE_LENGTH);
-            std::cout << "Line target: " << line_buffer << std::endl;
             int line_size=0;
             for(int i=0; i<MAX_LINE_LENGTH; i++){
                 if (line_buffer[i]=='\0' || line_buffer[i]=='\n'){
@@ -214,8 +202,6 @@ char* read_line_number_x(WordReader& self, int line_number, int* line_length){
             for (int j=0; j<line_size; j++){
                 new_line[j]=line_buffer[j];
             }
-
-            std::cout << "ACTUAL LINE SIZE: " << line_size << std::endl;
             line_length[0]=line_size-1;
             f_in.close();
             delete f_in_ptr;
@@ -224,7 +210,6 @@ char* read_line_number_x(WordReader& self, int line_number, int* line_length){
 
         // read lines until we are at the desired line
         f_in.getline(line_buffer, MAX_LINE_LENGTH);
-        std::cout << "Line: " << line_buffer << std::endl;
         line_ctn++;
     }
     std::cout << "Unexpected error while trying to fetch new word." << std::endl;
@@ -292,7 +277,6 @@ char ** WordReader::availableWordLists() const {
 
 // Fetch a new word
 void WordReader::fetchWord() {
-    std::cout << "FETCHING" << std::endl;
     // Remove the last word fetched
     if (this->latest_word != nullptr){
         delete this->latest_word->scrambled_word;
@@ -331,7 +315,6 @@ void WordReader::fetchWord() {
     int rand_line = (rand() % (this->file_line_count - this->read_lines_content_size));
     int* line_size = new int[2]; // Retrieves the size of the line
     char* rand_word = read_line_number_x(*this, rand_line, line_size);
-    std::cout << "LINE SIZE BEFORE METHOD: " << line_size[0] << std::endl;
     // Update read lines
     this->read_lines_content_size+=1;
     this->read_lines[this->read_lines_content_size]=rand_line;
