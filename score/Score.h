@@ -25,7 +25,7 @@ public:
     int guessed_words;
     int characters_corrected;
 private:
-    int multiplier;
+    double multiplier;
     int starting_points;
     int current_score;
     int base_score;

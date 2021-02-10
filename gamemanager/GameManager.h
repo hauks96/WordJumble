@@ -24,8 +24,6 @@ public:
     GameType* type;
     Score score;
     Timer time;
-    // Start the program
-    void __init__();
     // Switch to a different game mode (start menu)
     void switchGameMode();
     // Start menu
@@ -46,9 +44,9 @@ public:
     void selectWordList();
     // View highscores (highscore menu)
     void highscores();
-
 private:
     bool game_over;
+
 };
 
 

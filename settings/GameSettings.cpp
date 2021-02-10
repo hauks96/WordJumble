@@ -10,7 +10,7 @@
 #define DEFAULT_WORD_FILE_NAME_SIZE 12
 #define STARTING_POINTS 10 // Lives
 #define SCORE_PER_CHARACTER 100 // Each character gives a score of 100
-#define SCORE_TIME_MULTIPLIER 1.5 // Fast answer multiplier - goes back to 1 on surpassing time limit for a word
+#define SCORE_TIME_MULTIPLIER 0.5 // Fast answer multiplier - goes back to 1 on surpassing time limit for a word
 #define SCORE_MULTIPLIER_TIME_LIMIT 20 //
 #define GUESSED_WORD_BASE_SCORE 500
 

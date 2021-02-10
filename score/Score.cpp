@@ -41,7 +41,7 @@ void Score::updateScore(GuessWord &gw, Timer &timer) {
     std::cout << "After: " << this->multiplier * (double) this->score_per_time_mp << std::endl;
     if (timer.elapsed_time()<this->score_mp_time_limit){
         std::cout << "UPDATING!" << std::endl;
-        this->multiplier = this->multiplier * (double) this->score_per_time_mp;
+        this->multiplier = this->multiplier + (double) this->score_per_time_mp;
         this->current_score += this->multiplier * (this->base_score+((gw.word_size-gw.initially_correct_letters)*this->score_per_correct_char));
     }
     // Otherwise reset multiplier and set score
@@ -49,13 +49,15 @@ void Score::updateScore(GuessWord &gw, Timer &timer) {
         this->multiplier=1;
         this->current_score += this->base_score+((gw.word_size-gw.initially_correct_letters)*this->score_per_correct_char);
     }
+    this->guessed_words++;
 }
 
 void Score::reset(){
     this->points = this->starting_points;
     this->multiplier = 1;
     this->characters_corrected = 0;
-    this -> guessed_words = 0;
+    this->guessed_words = 0;
+    this->current_score=0;
 }
 
 int Score::getCurrentPoints() {

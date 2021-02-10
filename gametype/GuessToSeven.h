@@ -12,6 +12,9 @@
 class GuessToSeven: public GameType {
 public:
     GuessToSeven();
+    ~GuessToSeven(){
+        delete this->game_name;
+    };
     bool checkGameOver(Score& score){
         if (score.guessed_words == 7 || score.points == 0){
             return true;

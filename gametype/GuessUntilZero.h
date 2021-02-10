@@ -12,6 +12,9 @@
 class GuessUntilZero: public GameType{
 public:
     GuessUntilZero();
+    ~GuessUntilZero(){
+        delete this->game_name;
+    }
     bool checkGameOver(Score& score){
         if (score.points == 0){
             return true;

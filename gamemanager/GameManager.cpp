@@ -95,6 +95,7 @@ void GameManager::play(){
 
     char input_string[256];
     while(true){
+        std::cout << "Current multiplier: " << this->score.getCurrentMultiplier() << std::endl;
         std::cin >> input_string;
         if (strcmp("B", input_string)==0){
             // Add to highscores
@@ -179,11 +180,15 @@ void GameManager::switchGameMode() {
     if (strcmp(this->type->name(), guess_seven)==0){
         delete this->type;
         this->type = new GuessUntilZero();
+        char msg[] = "Game mode switched!";
+        this->user.add_message(msg, false);
         this->user.switch_game(*this->type);
     }
     else if (strcmp(this->type->name(),guess_zero)==0){
         delete this->type;
         this->type = new GuessToSeven();
+        char msg[] = "Game mode switched!";
+        this->user.add_message(msg, false);
         this->user.switch_game(*this->type);
     }
     else {

@@ -131,8 +131,6 @@ void replace_lives(char** frames, int lives){
 }
 
 void replace_game(char** frames, char* game){
-    char temp_score_save[SCREEN_WIDTH];
-    strcpy(temp_score_save, frames[GAME_MODE_SCORE_ROW]);
     char curr_char = game[0];
     int cnt_idx = 0;
     while(curr_char!='\0' && curr_char!='\n'){
@@ -140,8 +138,8 @@ void replace_game(char** frames, char* game){
         cnt_idx++;
         curr_char=game[cnt_idx];
     }
-    for (int i=GAME_MODE_POS+cnt_idx; i<SCREEN_WIDTH; i++){
-        frames[GAME_MODE_SCORE_ROW][i]=temp_score_save[i];
+    for (int i=GAME_MODE_POS+cnt_idx; i<SCORE_POS-7; i++){
+        frames[GAME_MODE_SCORE_ROW][i]=GAME_MODE_SCORE[i];
     }
 }
 
