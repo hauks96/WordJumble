@@ -226,10 +226,10 @@ void WordReader::init_word_reader(char* default_wordlist) {
     this->latest_word = nullptr;
 
     char filename[]="word_lists";
-    char line_buffer[MAX_LINE_LENGTH];
     int num_lines=0;
     std::ifstream* f_in_ptr = get_filestream(filename); // Must be deleted
     std::ifstream& f_in = *f_in_ptr; // Automatically removed when method returns
+    char line_buffer[MAX_LINE_LENGTH];
     while(true){
         if (f_in.eof()){
             break;
@@ -237,6 +237,7 @@ void WordReader::init_word_reader(char* default_wordlist) {
         f_in.getline(line_buffer, MAX_LINE_LENGTH);
         num_lines++;
     }
+    f_in.seekg(0, std::ios::beg);
     char ** word_lists = new char* [num_lines];
     int line_cnt = 0;
     // adding the file names to the word_lists array
@@ -254,7 +255,7 @@ void WordReader::init_word_reader(char* default_wordlist) {
         }
     }
     this->available_word_lists = word_lists;
-    this->available_word_lists_size = line_cnt+1;
+    this->available_word_lists_size = num_lines;
     f_in.close();
     delete f_in_ptr;
     load_file_presets(*this);
@@ -414,4 +415,13 @@ void WordReader::addHint() {
             }
         }
     }
+}
+
+void WordReader::switchWordlist(int index_of_list) {
+    if (index_of_list>this->available_word_lists_size-1){
+        std::cout << "WARNING: Index out of range while trying to switch word list" << std::endl;
+        throw std::runtime_error("Index out of bounds");
+    }
+    this->current_wordlist = this->available_word_lists[index_of_list];
+    load_file_presets(*this);
 }

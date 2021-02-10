@@ -30,6 +30,8 @@ public:
     void addHint();
     // Reset to default
     void reset();
+    // Switch to a wordlist at a given index of the array 'available word lists'
+    void switchWordlist(int index_of_list);
     // The last fetched guess word. Gets deleted when a new one is requested. Initially null
     GuessWord* latest_word;
 private:

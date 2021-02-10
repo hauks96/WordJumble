@@ -1,3 +1,2 @@
 test
-../../programming
-../../icelandic
+test2

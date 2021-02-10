@@ -13,14 +13,14 @@ int main(){
     std::cout << "TESTING: WordReader.init_word_reader() - ";
     word_reader.init_word_reader(default_word_list);
     bool error = false;
-    // Check that the wordlist is inserted properly
+    // Check that the wordlist is inserted properly on initialization
     if (strcmp(default_word_list, word_reader.currentWordList())!=0){
         std::cout << "ERROR: Invalid default wordlist set" << std::endl;
         error=true;
     }
     // Check that the word list counts the number of available word lists correctly
-    if (word_reader.availableWordListSize()!=1){
-        std::cout << "ERROR: List size should be 1" << std::endl;
+    if (word_reader.availableWordListSize()!=2){
+        std::cout << "ERROR: List size should be 2" << std::endl;
         std::cout << "Received word list size: " << word_reader.availableWordListSize() << std::endl;
         error=true;
     }
@@ -62,5 +62,35 @@ int main(){
         std::cout << "OK" << std::endl;
     }
 
+    /* ADD HINT TEST */
+    error=false;
+    std::cout << "TESTING: WordReader.addHint() - ";
+    int initially_correct_letters = word_reader.latest_word->initially_correct_letters;
+    word_reader.addHint();
+    int cnt_now_correct_letters = 0;
+    for (int i=0; i<word_reader.latest_word->word_size; i++){
+        if (word_reader.latest_word->correct_letters[i]){
+            cnt_now_correct_letters++;
+        }
+    }
+    if (!cnt_now_correct_letters>initially_correct_letters){
+        std::cout << "ERROR: Hint didn't update number of correct letters in scrambled word" << std::endl;
+        error=true;
+    }
+    if (!error){
+        std::cout << "OK" << std::endl;
+    }
+    /* SWITCH WORDLIST TEST */
+    std::cout << "TESTING: WordReader.switchWordlist() - ";
+    word_reader.switchWordlist(1);
+    // Check that the wordlist has changed to test2
+    if (strcmp("test2", word_reader.currentWordList())!=0){
+        std::cout << "ERROR: Invalid default wordlist set" << std::endl;
+        std::cout << "Should be: " << "test2" << " But is: " << word_reader.currentWordList() << std::endl;
+        error=true;
+    }
+    if (!error){
+        std::cout << "OK" << std::endl;
+    }
     return 0;
 }
