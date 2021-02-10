@@ -27,9 +27,9 @@
 // Starting index of inserts
 #define GAME_MODE_POS 14
 #define STATS_POS 58
-#define MP_POS 61
-#define LIVES_POS 64
-#define SCORE_POS 64
+#define MP_POS 64
+#define LIVES_POS 67
+#define SCORE_POS 67
 using namespace std;
 
 void set_empty_default(char** frames){
@@ -99,6 +99,25 @@ void replace_score(char** frames, int score){
     }
 }
 
+void replace_word(char** frames, GuessWord& gw){
+    char split_char = ' ';
+    char above_word_char = '-';
+    int word_row = 6;
+    int above_row = 5;
+    strcpy(frames[word_row], EMPTY_LINE);
+    strcpy(frames[above_row], EMPTY_LINE);
+    char word_replacement[gw.word_size*2];
+    char above_word_stuff[gw.word_size*2];
+    for (int i=0; i<gw.word_size; i++){
+        word_replacement[i*2]=gw.scrambled_word[i];
+        word_replacement[i*2+1]=split_char;
+        above_word_stuff[i*2]=above_word_char;
+        above_word_stuff[i*2+1]=split_char;
+    }
+    replace_centered(frames, above_word_stuff, gw.word_size*2, above_row);
+    replace_centered(frames, word_replacement, gw.word_size*2, word_row);
+}
+
 void replace_lives(char** frames, int lives){
     strcpy(frames[LIVES_ROW], LIVES);
     char buffer[2];
@@ -125,9 +144,9 @@ void replace_game(char** frames, char* game){
 
 void replace_mp(char** frames, double multiplier){
     strcpy(frames[MP_ROW], MULTIPLIER);
-    char buffer[6];
+    char buffer[4];
     int size = sprintf(buffer, "%f", multiplier);
-    for (int i=0; i<size; i++){
+    for (int i=0; i<4; i++){
         frames[MP_ROW][MP_POS+i]=buffer[i];
     }
 }
@@ -221,7 +240,7 @@ void OutputManager::start() {
     print_frames(this->frame);
 }
 
-void OutputManager::play(GuessWord& gw, int score, double mp, int lives) {
+void OutputManager::play(GuessWord& gw, char* current_game_mode, int score, double mp, int lives) {
     /*0 " -------------------------------------------------------------------------- "
       1 "|  GAME MODE:                                               SCORE: 0       |"
       2 "|                                                           LIVES: 10      |"
@@ -257,7 +276,10 @@ void OutputManager::play(GuessWord& gw, int score, double mp, int lives) {
     replace_score(this->frame, score);
     replace_mp(this->frame, mp);
     replace_lives(this->frame, lives);
+    replace_game(this->frame, current_game_mode);
+    replace_word(this->frame, gw);
     this->inGame=true;
+    print_frames(this->frame);
 }
 
 void OutputManager::switch_game(GameType &game_type) {
@@ -268,6 +290,7 @@ void OutputManager::switch_game(GameType &game_type) {
     }
     this->current_game = game_type.name();
     replace_game(this->frame, this->current_game);
+    print_frames(this->frame);
 }
 
 void OutputManager::add_message(char *message) {

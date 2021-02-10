@@ -15,6 +15,8 @@ class OutputManager {
     friend void replace_score(char** frames, int score);
     // Update the current game
     friend void replace_game(char** frames, char* game);
+    // Update game mode
+    friend void replace_word(GuessWord& gw, char** frames);
     // Update the multiplier
     friend void replace_mp(char** frames, double multiplier);
     // Update the lives in the frame
@@ -33,7 +35,7 @@ public:
     // Prints the quit message
     void end();
     // Prints the in game view
-    void play(GuessWord& gw, int score, double mp, int lives);
+    void play(GuessWord& gw, char* current_game_mode, int score, double mp, int lives);
     // Updates with new lives
     void updateLives(int lives);
     // Prints a message with the current frame
