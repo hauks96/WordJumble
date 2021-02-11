@@ -1,5 +1,7 @@
 98750,hauksson,programming,26,134
 14250,someuser,programming,7,39
+13500,KonniKlikk,programming,10,51
+4650,KonniKlikk,icelandic,4,16
 4000,John,programming,2,12
 3350,someuser,programming,2,9
 3000,User,programming,2,7

@@ -333,7 +333,7 @@ void WordReader::fetchWord() {
     guess_word->correct_letters = correct_characters;
     guess_word->initially_correct_letters = cnt;
     this->latest_word = guess_word;
-    delete line_size;
+    delete[] line_size;
 }
 
 // Reset do initial values
