@@ -16,6 +16,18 @@ $ chmod +x run.sh
 ```
 3. Type `./run.sh` in terminal
 
+## Demonstration
+**Start menu**\
+![image](images/mainmenu.PNG) \
+**In game**\
+![image](images/ingame.PNG) \
+**Game over**\
+![image](images/gameover.PNG) \
+**Word list selection**\
+![image](images/wordlists.PNG) \
+**Switch game mode** \
+![image](images/switchgame.PNG)
+
 ## How to add wordlist to the game
 1. Create a new text file with a descriptive name in the root directory with the file ending `.txt`
 2. Add words to the text file. (If you don't add anything the program will terminate with a warning message when you select it)
