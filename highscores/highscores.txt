@@ -1,3 +1,0 @@
-5400, Aegir, programming, 10, 120
-2500, Hakon, iceland, 6, 99
-1230, Aegir, programming, 5, 68

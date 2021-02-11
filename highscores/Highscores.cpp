@@ -17,7 +17,7 @@
 #define MAX_COL_SIZE 64
 #define MAX_LINE_SIZE 256
 
-int get_string_size(char* string){
+int getStringSize(char* string){
     char str_char = string[0];
     int size = 0;
     while(str_char!='\n' && str_char!='\0'){
@@ -52,7 +52,7 @@ char* getLineBufferDelimited(char* line, int delimiter){
         // If the character is a comma or we are at the end of the line
         if (line_char=='\n' || line_char==DELIMITER_CHAR || line_char=='\0'){
             wasDelimiter=true;
-            // if we got the desired delimiter count, copy
+            // if we got the desired delimiter count copy the contents of the buffer into a new array and return it
             if (delimiter==delimiter_nr){
                 tmp_buffer[buffer_idx]='\0';
                 char* ret_buffer = new char[buffer_idx+1];
@@ -65,17 +65,19 @@ char* getLineBufferDelimited(char* line, int delimiter){
                 std::cout << "WARNING: Reached end of line while trying to fetch on delimiter " << delimiter << std::endl;
                 std::runtime_error("End of line reached without return.");
             }
+            /* We didn't find find our desired column so we reset the values
+             * of the buffer and start writing into it again */
             else {
                 buffer_idx=0;
                 delimiter_nr++;
             }
         }
-        // If the character was a delimiter we don't want to write it.
+        // If the character was a delimiter we don't want to write it into the string
         if (!wasDelimiter){
             tmp_buffer[buffer_idx]=line_char;
             buffer_idx++;
         }
-        // Increase the index to read in line
+        // Increase the index to read the next character in the line
         line_idx++;
         line_char=line[line_idx];
     }
@@ -117,7 +119,7 @@ void insert_into_line(char* line, char* insert_string, int* end_index, bool end_
     int curr_idx = 0;
     while(true){
         // If we're at the end of the string we want to insert
-        if (curr_char!='\0' && curr_char!='\n'){
+        if (curr_char=='\0' || curr_char=='\n'){
             // Add the delimiter
             if (!end_of_line){
                 line[curr_idx+start_index]=',';
@@ -126,19 +128,23 @@ void insert_into_line(char* line, char* insert_string, int* end_index, bool end_
                 end_index[0]=curr_idx+start_index;
                 return;
             }
-                // Mark end of line
+            // Mark end of line
             else {
-                //line[curr_idx+start_index]='\n';
-                line[curr_idx+start_index+1]='\0';
+                line[curr_idx+start_index]='\0';
+                return;
             }
         }
+        // Insert the character from the insert string into the line
         line[curr_idx+start_index]=insert_string[curr_idx];
+        // increase the index for next character
         curr_idx++;
+        // get the next character from the string we want to insert into our line
         curr_char=insert_string[curr_idx];
     }
 }
 
 char* create_line(int score, char*username, char* wordlist, int correct_words, int correct_chars){
+    // Create a line that we can write into the highscores file
     char* line = new char[MAX_LINE_SIZE];
     char* score_str = getIntAsString(score);
     char* correct_words_str = getIntAsString(correct_words);
@@ -155,50 +161,51 @@ char* create_line(int score, char*username, char* wordlist, int correct_words, i
 
 char*** Highscores::getHighscores(int howMany, bool all){
     std::ifstream f_in;
+    // If want to read all lines
     if (all){
         howMany = this->number_of_highscores;
     }
+    // If the number exceeds the available highscores
     if (howMany>this->number_of_highscores){
         std::cout << "TOO MANY NUMBERS REQUESTED!" << std::endl;
         std::runtime_error("Out of bounds highscore request");
     }
+    // create a new highscores array that contains all the data from the file
     char*** highscores = new char**[howMany];
-    f_in.open("highscore.txt");
+    f_in.open(this->filename);
+    // if the file is not found stop runtime
     if (!f_in.is_open()){
         std::cout << "File not found." << std::endl;
         std::runtime_error("File was not found");
     }
+    // there are no highscores, return a null pointer
     if (f_in.eof()){
         std::cout << "No highscores." << std::endl;
         return nullptr;
     }
-    int curr_line = 0;
+
     char line_buffer[MAX_LINE_SIZE];
+    // read howmany number of lines and convert them into useful data objects
     for (int i=0; i<howMany; i++){
         f_in.getline(line_buffer, MAX_LINE_SIZE);
         if (line_buffer[0]=='\0'){
             return highscores;
         }
+        // Each 'columns' array contains all the data for each row
         char** columns = new char*[NUMBER_OF_COLUMNS];
-        char* username_temp = getUsername(line_buffer);
-        char* username = new char[get_string_size(username_temp)];
-        strcpy(username, username_temp);
-        //std::cout << "Username: " << username << std::endl;
+        char* username = getUsername(line_buffer);
         char* wordList = getWordlist(line_buffer);
-        //std::cout << "Wordlist: " << wordList << std::endl;
         char* charsCorrected = getCharsCorrected(line_buffer);
-        //std::cout << "Chars corrected: " << charsCorrected<< std::endl;
         char* correctWords = getCorrectWords(line_buffer);
-        //std::cout << "Words corrected: " << correctWords << std::endl;
         char* score = getScore(line_buffer);
-        //std::cout << "Score: " << score << std::endl;
+        // Insert data into row column
         columns[USERNAME_DELIMITER_NR]=username;
         columns[SCORE_DELIMITER_NR]=score;
         columns[WORDLIST_DELIMITER_NR]=wordList;
         columns[CORR_CHARS_DELIMITER_NR]=charsCorrected;
         columns[CORR_WORDS_DELIMITER_NR]=correctWords;
-        highscores[curr_line]=columns;
-        curr_line++;
+        // Add columns to row
+        highscores[i]=columns;
     }
     f_in.close();
     return highscores;
@@ -206,31 +213,38 @@ char*** Highscores::getHighscores(int howMany, bool all){
 
 void Highscores::addHighscore(int score, char* username, char* wordlist, int correct_words, int correct_chars){
     char line_buffer[MAX_LINE_SIZE];
-    std::fstream io_stream;
-    io_stream.open("highscore.txt");
-    if (!io_stream.is_open()){
+    std::ifstream f_in;
+    // try to open file
+    f_in.open(this->filename);
+    // if the file isnt open stop the runtime of the program
+    if (!f_in.is_open()){
         std::cout << "File not found." << std::endl;
         std::runtime_error("File was not found");
     }
 
     // Reset pointer with seekg
-    io_stream.seekg(0, std::ios::beg);
+    f_in.seekg(0, std::ios::beg);
     char* lines[this->number_of_highscores];
     // Add all lines of file to the new array
     for (int i=0; i<this->number_of_highscores; i++){
-        if (io_stream.eof()){
+        if (f_in.eof()){
             std::cout << "WARNING: Unexpected end of file." << std::endl;
             std::runtime_error("File end while trying to read line");
         }
         // read a line
-        io_stream.getline(line_buffer, MAX_LINE_SIZE);
+        f_in.getline(line_buffer, MAX_LINE_SIZE);
         // copy current line to temporary string
-        char temp_line[MAX_LINE_SIZE];
+        char* temp_line = new char[MAX_LINE_SIZE];
         strcpy(temp_line, line_buffer);
         // add line to array
         lines[i] = temp_line;
     }
-    io_stream.seekp(0, std::ios::beg);
+
+    f_in.close();
+    // open filestream again but this time for write
+    std::ofstream f_out;
+    f_out.open(this->filename);
+    bool hasBeenAdded=false; // If the new line has been added or not
     // Find position for new score and insert it
     for (int i=0; i<this->number_of_highscores; i++){
         // get the string that represents the score
@@ -238,16 +252,25 @@ void Highscores::addHighscore(int score, char* username, char* wordlist, int cor
         // convert the string to int
         int score_this_line = getStringAsNumber(score_file_line);
         // check if the score is lesser than the new score
-        if (score>score_this_line){
+        if (score>score_this_line && !hasBeenAdded){
+            hasBeenAdded = true;
             // write new score to file
             char* new_line = create_line(score, username, wordlist, correct_words, correct_chars);
-            io_stream << new_line << std::endl;
+            f_out << new_line << std::endl;
             delete new_line;
         }
         // write the normal score to file
-        io_stream << lines[i] << std::endl;
+        f_out << lines[i] << std::endl;
+        delete lines[i];
     }
-    io_stream.close();
+    // If all original highscores have been added but the new one hasn't yet
+    if (!hasBeenAdded){
+        // add it to highscores at the bottom
+        char* new_line = create_line(score, username, wordlist, correct_words, correct_chars);
+        f_out << new_line << std::endl;
+        delete new_line;
+    }
+    f_out.close();
     this->number_of_highscores++;
 }
 
@@ -255,10 +278,11 @@ int Highscores::numberOfHighscores() {
     return this->number_of_highscores;
 }
 
-Highscores::Highscores() {
+void Highscores::init_highscores(char *filename) {
+    this->filename=filename;
     char line_buffer[MAX_LINE_SIZE];
     std::ifstream f_in;
-    f_in.open("highscore.txt");
+    f_in.open(filename);
     if (!f_in.is_open()){
         std::cout << "HIGHSCORE FILE NOT FOUND!" << std::endl;
         std::runtime_error("FILE NOT FOUND!");
@@ -273,8 +297,12 @@ Highscores::Highscores() {
         }
         f_in.getline(line_buffer, MAX_LINE_SIZE);
         // Count total number of lines
+        if (line_buffer[0]=='\n' ||line_buffer[0]=='\0'){
+            break;
+        }
         cnt_lines++;
     }
     this->number_of_highscores = cnt_lines;
+    std::cout << "NUMBER OF LINES: " << cnt_lines << std::endl;
     f_in.close();
 }

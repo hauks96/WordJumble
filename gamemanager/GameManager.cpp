@@ -1,6 +1,5 @@
-//
-// Created by agirm on 06/02/2021.
-//
+// I Sincerely regret not making a string struct or class for this assignment.
+// I also sincerely apologize to whomever has to go through all this code
 #include <iostream>
 #include <stdlib.h>
 #include <cstring>
@@ -19,20 +18,47 @@
 #include "../words/GuessWord.h"
 #include "../outputmanager/OutputManager.h"
 #include "../outputmanager/OutputManager.cpp"
+#include "../highscores/Highscores.h"
+#include "../highscores/Highscores.cpp"
 
 GameManager::GameManager() {
     this->score.init_score(this->settings);
     this->words.init_word_reader(this->settings.default_wordlist);
+    this->highscores.init_highscores(this->settings.highscore_file);
     GameType* init_type = new GuessUntilZero();
     this->type = init_type;
     this->user.init_output_manager(*init_type);
     this->game_over = false;
 }
 
+
+void GameManager::getUsernameFromUser() {
+    char msg[] = "Enter a username to continue!";
+    this->user.add_message(msg, true);
+    char input_string[64];
+    while(true){
+        std::cin >> input_string;
+        if (strcmp(input_string, "P")==0 || strcmp(input_string, "S")==0 ||strcmp(input_string, "W")==0
+            ||strcmp(input_string, "H")==0 || strcmp(input_string, "Q")==0){
+            char caps_msg[] = "ENTER A USERNAME TO CONTINUE!";
+            this->user.add_message(caps_msg, true);
+        }
+        else {
+            char* username = new char[get_string_size(input_string)];
+            strcpy(username, input_string);
+            this->username=username;
+            return;
+        }
+    }
+}
+
 void GameManager::start() {
+    this->user.start();
+    this->getUsernameFromUser();
     this->user.start();
     char input_string[256];
     while(true){
+        // get input
         std::cin >> input_string;
         if (strcmp(input_string, "P")==0){
             this->play();
@@ -67,7 +93,10 @@ void GameManager::start() {
             this->user.start();
         }
         // Go to highscores...
-
+        else if (strcmp(input_string, "H")==0){
+            this->getHighscores();
+            this->user.start();
+        }
         // Command not recognized
         else{
             char msg[]="Command not recognized!";
@@ -79,6 +108,9 @@ void GameManager::start() {
 bool checkGameOver(GameManager& gm){
     bool game_over = gm.type->checkGameOver(gm.score);
     if (game_over){
+        gm.highscores.addHighscore(gm.score.getCurrentScore(), gm.username,
+                                   gm.words.currentWordList(), gm.score.guessed_words,
+                                   gm.score.characters_corrected);
         gm.score.reset();
         gm.time.reset_time();
         gm.words.reset();
@@ -94,14 +126,18 @@ void GameManager::play(){
     }
     this->time.start_time();
     this->words.fetchWord();
-    this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(), this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), true);
+    this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(),
+                    this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), true);
 
     char input_string[256];
     while(true){
         std::cin >> input_string;
         if (strcmp("B", input_string)==0){
             // Add to highscores
-            // this->highscores.add(this->score.getCurrentScore());
+            this->highscores.addHighscore(this->score.getCurrentScore(), this->username,
+                                          this->words.currentWordList(), this->score.guessed_words,
+                                          this->score.characters_corrected);
+            // Reset everything that needs resetting
             this->score.reset();
             this->time.reset_time();
             this->words.reset();
@@ -137,7 +173,9 @@ void GameManager::nextWord() {
     this->time.reset_time();
     this->words.fetchWord();
     this->time.start_time();
-    this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(), this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), true);
+    this->user.play(this->type->name(), *this->words.latest_word,
+                    this->score.getCurrentScore(), this->score.getCurrentMultiplier(),
+                    this->score.getCurrentPoints(), true);
 }
 
 void GameManager::switchGameMode() {
@@ -165,7 +203,8 @@ void GameManager::switchGameMode() {
 
 void GameManager::selectWordList() {
     char msg[] = "Enter number of desired wordlist to select it.";
-    this->user.word_lists(this->words.availableWordLists(), this->words.currentWordList(), this->words.availableWordListSize(), msg);
+    this->user.word_lists(this->words.availableWordLists(), this->words.currentWordList(),
+                          this->words.availableWordListSize(), msg);
     char input_string[256];
     while(true){
         std::cin >> input_string;
@@ -176,11 +215,15 @@ void GameManager::selectWordList() {
             int idx = (atoi (input_string))-1;
             this->words.switchWordlist(idx);
             char msg[]="Word list switched!";
-            this->user.word_lists(this->words.availableWordLists(), this->words.currentWordList(), this->words.availableWordListSize(), msg);
+            this->user.word_lists(this->words.availableWordLists(),
+                                  this->words.currentWordList(),
+                                  this->words.availableWordListSize(), msg);
         }
         else {
             char msg[] = "Command not recognized!";
-            this->user.word_lists(this->words.availableWordLists(), this->words.currentWordList(), this->words.availableWordListSize(), msg);
+            this->user.word_lists(this->words.availableWordLists(),
+                                  this->words.currentWordList(),
+                                  this->words.availableWordListSize(), msg);
         }
     }
 }
@@ -215,7 +258,9 @@ void GameManager::guess() {
     // If the word was correct
     if (this->words.latest_word->isEqual(input_string)){
         this->score.updateScore(*this->words.latest_word, this->time);
-        this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(), this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), false);
+        this->user.play(this->type->name(), *this->words.latest_word,
+                        this->score.getCurrentScore(), this->score.getCurrentMultiplier(),
+                        this->score.getCurrentPoints(), false);
         bool game_over = checkGameOver(*this);
         char msg[] = "CORRECT!";
         this->user.add_message(msg, false);
@@ -243,7 +288,9 @@ void GameManager::guess() {
         this->score.decreasePoints(1);
         this->user.updateLives(this->score.getCurrentPoints(), false);
         char msg[] = "INCORRECT!";
-        this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(), this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), false);
+        this->user.play(this->type->name(),
+                        *this->words.latest_word, this->score.getCurrentScore(),
+                        this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), false);
         this->user.add_message(msg, false);
         bool game_over = checkGameOver(*this);
         if (game_over){
@@ -251,6 +298,26 @@ void GameManager::guess() {
             this->game_over=true;
             return;
         }else{
+            this->user.add_message(msg, true);
+        }
+    }
+}
+
+void GameManager::getHighscores() {
+    int max_number = this->highscores.numberOfHighscores();
+    this->user.highscores(nullptr, max_number, 0, true);
+    char input_string[256];
+    while(true){
+        std::cin >> input_string;
+        if (strcmp(input_string, "BACK")==0){
+            return;
+        }
+        else if (atoi(input_string)<max_number+1 && atoi(input_string)!=0){
+            char*** highscores_array = this->highscores.getHighscores(atoi(input_string), false);
+            this->user.highscores(highscores_array, max_number, atoi(input_string), false);
+        }
+        else {
+            char msg[] = "Command not recognized.";
             this->user.add_message(msg, true);
         }
     }

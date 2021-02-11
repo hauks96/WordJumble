@@ -13,6 +13,8 @@
 #include "../gametype/GuessToSeven.h"
 #include "../words/WordReader.h"
 #include "../outputmanager/OutputManager.h"
+#include "../highscores/Highscores.h"
+
 class GameManager {
     //friend void in_game_input(GameManager& gm);
     friend bool checkGameOver(GameManager& gm);
@@ -20,6 +22,7 @@ public:
     GameManager();
     GameSettings settings;
     OutputManager user;
+    Highscores highscores;
     WordReader words;
     GameType* type;
     Score score;
@@ -41,7 +44,10 @@ public:
     // Word Lists (word list menu)
     void selectWordList();
     // View highscores (highscore menu)
-    void highscores();
+    void getHighscores();
+    // Get a users name
+    void getUsernameFromUser();
+    char* username;
 private:
     bool game_over;
 

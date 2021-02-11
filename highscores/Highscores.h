@@ -17,11 +17,12 @@ class Highscores {
     friend char* getLineBufferDelimited(char* line, int delimiter);
     friend char* createLine(int score, char* wordlist, int corr_words, int corr_char);
 public:
-    Highscores();
     void addHighscore(int score, char* username, char* wordlist, int correct_words, int correct_chars);
     char*** getHighscores(int howMany, bool all);
     int numberOfHighscores();
+    void init_highscores(char* filename);
 private:
+    char* filename;
     int number_of_highscores;
 };
 
