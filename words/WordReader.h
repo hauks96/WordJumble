@@ -1,7 +1,3 @@
-//
-// Created by agirm on 08/02/2021.
-//
-
 #ifndef HW2_WORDREADER_H
 #define HW2_WORDREADER_H
 #include "GuessWord.h"

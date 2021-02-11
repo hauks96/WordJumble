@@ -1,7 +1,3 @@
-//
-// Created by agirm on 07/02/2021.
-//
-
 #ifndef HW2_GAMETYPE_H
 #define HW2_GAMETYPE_H
 #include "../score/Score.h"

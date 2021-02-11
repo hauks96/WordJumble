@@ -1,7 +1,3 @@
-//
-// Created by agirm on 09/02/2021.
-//
-
 #include "OutputManager.h"
 #include "../settings/GameSettings.h"
 #include <iostream>

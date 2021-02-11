@@ -1,7 +1,3 @@
-//
-// Created by agirm on 06/02/2021.
-//
-
 #ifndef HW2_GAMEMANAGER_H
 #define HW2_GAMEMANAGER_H
 

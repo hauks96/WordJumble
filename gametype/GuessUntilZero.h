@@ -1,7 +1,3 @@
-//
-// Created by agirm on 07/02/2021.
-//
-
 #ifndef HW2_GUESSUNTILZERO_H
 #define HW2_GUESSUNTILZERO_H
 #include "GameType.h"

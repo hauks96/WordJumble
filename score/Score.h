@@ -1,7 +1,3 @@
-//
-// Created by agirm on 06/02/2021.
-//
-
 #ifndef HW2_SCORE_H
 #define HW2_SCORE_H
 #include "../settings/GameSettings.h"

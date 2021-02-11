@@ -1,7 +1,3 @@
-//
-// Created by agirm on 08/02/2021.
-//
-
 #include "WordReader.h"
 #include <fstream>
 #include <iostream>

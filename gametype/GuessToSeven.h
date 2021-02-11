@@ -1,7 +1,3 @@
-//
-// Created by agirm on 07/02/2021.
-//
-
 #ifndef HW2_GUESSTOSEVEN_H
 #define HW2_GUESSTOSEVEN_H
 #include "GameType.h"

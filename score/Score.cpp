@@ -1,6 +1,3 @@
-//
-// Created by agirm on 06/02/2021.
-//
 #include "Score.h"
 #include "../settings/GameSettings.h"
 // Calculate score according to correct letters guessed by user in a word

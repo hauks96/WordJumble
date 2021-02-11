@@ -1,11 +1,7 @@
-//
-// Created by agirm on 09/02/2021.
-//
-
 #ifndef HW2_OUTPUTMANAGER_H
 #define HW2_OUTPUTMANAGER_H
 #include "../gametype/GameType.h"
-// For each
+
 class OutputManager {
     // Add a string to the center of a given row in the frame
     friend void replace_centered(char** frames, char* replacement, int replacement_size, int row);

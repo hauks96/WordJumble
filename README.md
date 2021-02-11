@@ -2,6 +2,10 @@
 C++ Course assignment 2\
 _This is an implementation of version C in the assignment._
 
+**Created by**\
+Ægir Máni Hauksson: aegir19@ru.is\
+Hákon Hákonarson: hakon19@ru.is
+
 ## How to play
 **Windows**
 1. Open the root directory (contains the run.exe file) in terminal.

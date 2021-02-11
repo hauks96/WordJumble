@@ -1,6 +1,3 @@
-//
-// Created by agirm on 07/02/2021.
-//
 #include "GameSettings.h"
 #include "../score/Score.h"
 #include <iostream>

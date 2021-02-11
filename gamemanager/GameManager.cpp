@@ -1,5 +1,5 @@
 // I Sincerely regret not making a string struct for this assignment.
-// I also sincerely apologize to whomever goes through all this code
+// Otherwise GL HF
 #include <iostream>
 #include <stdlib.h>
 #include <cstring>

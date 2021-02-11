@@ -1,7 +1,3 @@
-//
-// Created by agirm on 11/02/2021.
-//
-
 #ifndef HW2_HIGHSCORES_H
 #define HW2_HIGHSCORES_H
 

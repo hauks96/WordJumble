@@ -1,7 +1,3 @@
-//
-// Created by agirm on 11/02/2021.
-//
-
 #include "Highscores.h"
 #include <fstream>
 #include <iostream>

@@ -1,7 +1,3 @@
-//
-// Created by agirm on 08/02/2021.
-//
-
 #ifndef HW2_GUESSWORD_H
 #define HW2_GUESSWORD_H
 #include <iostream>
