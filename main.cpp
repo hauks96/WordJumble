@@ -9,7 +9,6 @@
 #include <thread>
 
 int main(){
-
     GameManager game_manager;
     game_manager.start();
     /*

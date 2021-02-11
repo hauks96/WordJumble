@@ -7,15 +7,22 @@
 
 
 class Highscores {
-    friend int getScore(char* line);
+    friend char* getIntAsString(int number);
+    friend int get_string_size(char* string);
+    friend int getStringAsNumber(char* some_string);
+    friend char* getScore(char* line);
     friend char* getWordlist(char* line);
-    friend int getCorrectWords(char* line);
-    friend int getCharsCorrected(char* line);
+    friend char* getCorrectWords(char* line);
+    friend char* getCharsCorrected(char* line);
     friend char* getLineBufferDelimited(char* line, int delimiter);
     friend char* createLine(int score, char* wordlist, int corr_words, int corr_char);
 public:
-    char** getHighscores(int howMany);
-    char** getAllHighscores();
+    Highscores();
+    void addHighscore(int score, char* username, char* wordlist, int correct_words, int correct_chars);
+    char*** getHighscores(int howMany, bool all);
+    int numberOfHighscores();
+private:
+    int number_of_highscores;
 };
 
 
