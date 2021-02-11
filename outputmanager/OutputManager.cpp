@@ -17,6 +17,7 @@
 #define LIVES             "|                                                           LIVES:          |"
 #define MULTIPLIER        "|                                                           MP:             |"
 #define MESSAGE_SEPARATOR "|---------------------------------------------------------------------------|"
+// |  Nr  |   score   |      wordlist     | correct words |  chars corrected   |
 
 // Row numbers of each element (index)
 #define MESSAGE_ROW 13
