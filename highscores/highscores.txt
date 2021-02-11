@@ -1,1 +1,1 @@
-score,wordlist,correct words,chars corrected
+score,username,wordlist,correct words,chars corrected
