@@ -271,7 +271,7 @@ void OutputManager::init_output_manager(GameType& game_type) {
     this->inGame=false;
 }
 
-void OutputManager::start() {
+void OutputManager::start(bool print, bool defaultMessage) {
     this->inGame=false;
     /* Desired outcome example
      0 " -------------------------------------------------------------------------- "
@@ -314,7 +314,12 @@ void OutputManager::start() {
     replace_centered(this->frame, exit, 8, exit_row);
     replace_centered(this->frame, word_list, 20, wordlist_row);
     replace_game(this->frame, this->current_game);
-    this->add_message(msg, true);
+    if (defaultMessage){
+        this->add_message(msg, false);
+    }
+    if (print){
+        print_frames(this->frame);
+    }
 }
 
 void OutputManager::play(char* current_game_mode, GuessWord& gw, int score, double mp, int lives, bool print) {

@@ -303,6 +303,5 @@ void Highscores::init_highscores(char *filename) {
         cnt_lines++;
     }
     this->number_of_highscores = cnt_lines;
-    std::cout << "NUMBER OF LINES: " << cnt_lines << std::endl;
     f_in.close();
 }

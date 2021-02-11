@@ -1,5 +1,5 @@
-// I Sincerely regret not making a string struct or class for this assignment.
-// I also sincerely apologize to whomever has to go through all this code
+// I Sincerely regret not making a string struct for this assignment.
+// I also sincerely apologize to whomever goes through all this code
 #include <iostream>
 #include <stdlib.h>
 #include <cstring>
@@ -38,11 +38,13 @@ void GameManager::getUsernameFromUser() {
     char input_string[64];
     while(true){
         std::cin >> input_string;
+        // If the user tries to enter one of the commands instead of a username
         if (strcmp(input_string, "P")==0 || strcmp(input_string, "S")==0 ||strcmp(input_string, "W")==0
             ||strcmp(input_string, "H")==0 || strcmp(input_string, "Q")==0){
             char caps_msg[] = "ENTER A USERNAME TO CONTINUE!";
             this->user.add_message(caps_msg, true);
         }
+        // Add the username
         else {
             char* username = new char[get_string_size(input_string)];
             strcpy(username, input_string);
@@ -53,9 +55,9 @@ void GameManager::getUsernameFromUser() {
 }
 
 void GameManager::start() {
-    this->user.start();
+    this->user.start(false, false);
     this->getUsernameFromUser();
-    this->user.start();
+    this->user.start(true, true);
     char input_string[256];
     while(true){
         // get input
@@ -76,7 +78,7 @@ void GameManager::start() {
                 }
             }
             // Go back to start menu
-            this->user.start();
+            this->user.start(true, true);
             this->game_over=false;
         }
         // Exit game
@@ -90,12 +92,12 @@ void GameManager::start() {
         // Set a new wordlist
         else if (strcmp(input_string, "W")==0){
             this->selectWordList();
-            this->user.start();
+            this->user.start(true, true);
         }
         // Go to highscores...
         else if (strcmp(input_string, "H")==0){
             this->getHighscores();
-            this->user.start();
+            this->user.start(true, true);
         }
         // Command not recognized
         else{
@@ -170,17 +172,21 @@ void GameManager::nextWord() {
     if (!this->words.remainingWords()){
         return;
     }
-    this->time.reset_time();
-    this->words.fetchWord();
-    this->time.start_time();
+    this->time.reset_time(); // reset time before next word
+    this->words.fetchWord(); // Fetch a new word from the word bank
+    this->time.start_time(); // Start the timer
     this->user.play(this->type->name(), *this->words.latest_word,
                     this->score.getCurrentScore(), this->score.getCurrentMultiplier(),
                     this->score.getCurrentPoints(), true);
 }
 
 void GameManager::switchGameMode() {
+    /* Had to hardcode it because of virtual destructors :( */
+
+    // The gametypes
     char guess_seven[] = "Guess seven words";
     char guess_zero[] = "Guess to zero";
+    // If the game type is seven words switch to gues to zero
     if (strcmp(this->type->name(), guess_seven)==0){
         delete this->type;
         this->type = new GuessUntilZero();
@@ -188,6 +194,7 @@ void GameManager::switchGameMode() {
         this->user.add_message(msg, false);
         this->user.switch_game(*this->type);
     }
+    // if the game mode is guess to zero switch to seven words
     else if (strcmp(this->type->name(),guess_zero)==0){
         delete this->type;
         this->type = new GuessToSeven();
@@ -202,15 +209,18 @@ void GameManager::switchGameMode() {
 }
 
 void GameManager::selectWordList() {
+    // Send user a message
     char msg[] = "Enter number of desired wordlist to select it.";
     this->user.word_lists(this->words.availableWordLists(), this->words.currentWordList(),
                           this->words.availableWordListSize(), msg);
     char input_string[256];
     while(true){
+        // get input
         std::cin >> input_string;
         if (strcmp(input_string, "B")==0){
             return;
         }
+        // if user enters a number within the range of the wordlist count, change to that wordlist
         else if ((atoi (input_string))<this->words.availableWordListSize()+1){
             int idx = (atoi (input_string))-1;
             this->words.switchWordlist(idx);
@@ -264,12 +274,14 @@ void GameManager::guess() {
         bool game_over = checkGameOver(*this);
         char msg[] = "CORRECT!";
         this->user.add_message(msg, false);
+        // if the game is over after guessing
         if (game_over){
             this->user.add_message(msg, false);
             this->user.gameOver();
             this->game_over=true;
             return;
         }
+        // If there are no remaining words in the word bank do a game over with a custom message
         else if (!this->words.remainingWords()){
             char msg[] = "No more words in wordlist!";
             this->user.add_message(msg, false);
@@ -285,6 +297,7 @@ void GameManager::guess() {
     }
         // If the word was incorrect
     else {
+        // decrease the points left
         this->score.decreasePoints(1);
         this->user.updateLives(this->score.getCurrentPoints(), false);
         char msg[] = "INCORRECT!";
@@ -293,10 +306,12 @@ void GameManager::guess() {
                         this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), false);
         this->user.add_message(msg, false);
         bool game_over = checkGameOver(*this);
+        // check if the game is over
         if (game_over){
             this->user.gameOver();
             this->game_over=true;
             return;
+        // if the game is not over just update with the 'incorrect' message
         }else{
             this->user.add_message(msg, true);
         }
@@ -309,9 +324,11 @@ void GameManager::getHighscores() {
     char input_string[256];
     while(true){
         std::cin >> input_string;
+        // Let user go back
         if (strcmp(input_string, "BACK")==0){
             return;
         }
+        // If input is a number and it's in range of max number allowed print the highscores in that range
         else if (atoi(input_string)<max_number+1 && atoi(input_string)!=0){
             char*** highscores_array = this->highscores.getHighscores(atoi(input_string), false);
             this->user.highscores(highscores_array, max_number, atoi(input_string), false);

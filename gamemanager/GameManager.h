@@ -39,8 +39,6 @@ public:
     void play();
     // Get the next word
     void nextWord();
-    // Restart the game (restart current game mode)
-    void restart();
     // Word Lists (word list menu)
     void selectWordList();
     // View highscores (highscore menu)

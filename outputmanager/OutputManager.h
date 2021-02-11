@@ -35,7 +35,7 @@ public:
     // initialize the class with default values
     void init_output_manager(GameType& game_type);
     // Prints the start screen
-    void start();
+    void start(bool print, bool defaultMessage);
     // Prints the in game view
     void play(char* current_game_mode, GuessWord& gw, int score, double mp, int lives, bool print);
     // Print game over screen

@@ -6,6 +6,8 @@
 #include <iostream>
 using namespace std;
 int main(){
+    // These tests suck ass (also didn't really have time to actually do them properly)
+    // Check the tests in the word reader for some real tests!
     Highscores highscores;
     bool error = false;
     std::cout << "SIZE OF HIGHSCORES: " << highscores.numberOfHighscores() << std::endl;
