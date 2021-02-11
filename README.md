@@ -1,6 +1,6 @@
 # WordJumble
 C++ Course assignment 2\
-This is an implementation of version C in the assignment,
+_This is an implementation of version C in the assignment._
 
 ## How to play
 **Windows**
