@@ -15,7 +15,7 @@ Hákon Hákonarson: hakon19@ru.is
 1. Open root directory in terminal
 2. Compile by typing the following command
 ```
-$ g++ -o run.sh main.cp
+$ g++ -o run.sh main.cpp
 $ chmod +x run.sh
 ```
 3. Type `./run.sh` in terminal
