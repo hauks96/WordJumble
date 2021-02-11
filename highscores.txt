@@ -1,4 +1,6 @@
+98750,hauksson,programming,26,134
 14250,someuser,programming,7,39
 4000,John,programming,2,12
 3350,someuser,programming,2,9
 3000,User,programming,2,7
+2850,hauksson,random,2,6

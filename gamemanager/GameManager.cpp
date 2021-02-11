@@ -283,6 +283,9 @@ void GameManager::guess() {
         }
         // If there are no remaining words in the word bank do a game over with a custom message
         else if (!this->words.remainingWords()){
+            this->highscores.addHighscore(this->score.getCurrentScore(), this->username,
+                                          this->words.currentWordList(), this->score.guessed_words,
+                                          this->score.characters_corrected);
             char msg[] = "No more words in wordlist!";
             this->user.add_message(msg, false);
             this->user.gameOver();
