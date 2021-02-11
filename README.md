@@ -13,12 +13,7 @@ Hákon Hákonarson: hakon19@ru.is
 
 **Mac/Linux**
 1. Open root directory in terminal
-2. Compile by typing the following command
-```
-$ g++ -o run.sh main.cpp
-$ chmod +x run.sh
-```
-3. Type `./run.sh` in terminal
+2. Type `./run` in terminal
 
 ## How to add wordlist to the game
 1. Create a new text file with a descriptive name in the root directory with the file ending `.txt`
