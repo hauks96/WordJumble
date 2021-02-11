@@ -21,27 +21,8 @@ void scramble_helper(char* word, char*scrambled_word, int line_size){
         scrambled_word[i]=scrambled_word[rand_idx];
         scrambled_word[rand_idx]=temp_a;
     }
-    /*
+
     bool equal = true;
-    // Scramble until the arrays are not equal
-    while(true){
-        for (int i=0; i<line_size; i++){
-            if(line_size<=2){
-                break;
-            }
-            if (word[i]!=scrambled_word[i]){
-                equal=false;
-                break;
-            }
-        }
-        if(equal){
-            scramble_helper(word, scrambled_word, line_size);
-            break;
-        }
-        else{
-            break;
-        }
-    }*/
 }
 
 // Scramble a word and return it as a new array
@@ -141,6 +122,10 @@ void load_file_presets(WordReader& self){
     }
     self.file_line_count = cnt_lines;
     f_in.close();
+    if (cnt_lines==0){
+        std::cout << "WARNING: The word file with name " << self.current_wordlist << " does not contain any words!" << std::endl;
+        std::runtime_error("No words in file.");
+    }
     delete f_in_ptr;
 }
 
@@ -278,6 +263,10 @@ char ** WordReader::availableWordLists() const {
 
 // Fetch a new word
 void WordReader::fetchWord() {
+    if (this->read_lines_content_size==this->file_line_count){
+        std::cout << "WARNING: Word list has been completed. No more words available" << std::endl;
+        std::runtime_error("No more words to play.");
+    }
     // Remove the last word fetched
     if (this->latest_word != nullptr){
         delete this->latest_word->scrambled_word;
@@ -295,41 +284,49 @@ void WordReader::fetchWord() {
         delete this->read_lines; // Remove old
         this->read_lines = new_array; // Add ned
     }
+
     int size = this->file_line_count-this->read_lines_content_size;
     int options[size];
     bool exists;
 
-    for (int i=0; i<size; i++){
-        exists=false;
-        for (int j=0; j<this->read_lines_content_size; j++) {
-            if (i == read_lines[j]) {
-                exists = true;
+    bool inlist;
+    int opt_idx = 0;
+    // Add all lines that haven't been used before to the options list
+    for (int i=0; i<this->file_line_count; i++){
+        inlist=false;
+        for (int j=0; j<this->read_lines_content_size; j++){
+            if (this->read_lines[j]==i){
+                inlist=true;
                 break;
             }
         }
-        if (!exists){
-            options[i]=i;
+        if (!inlist){
+            options[opt_idx]=i;
+            opt_idx++;
         }
     }
+
     std::srand(std::time(nullptr)); // use time as random seed
     // get random line number to get word from
-    int rand_line = (rand() % (this->file_line_count - this->read_lines_content_size));
-    int* line_size = new int[2]; // Retrieves the size of the line
+    int rand_num = (rand() % (this->file_line_count - this->read_lines_content_size));
+    int rand_line = options[rand_num];
+    int* line_size = new int[1]; // Retrieves the size of the line
     char* rand_word = read_line_number_x(*this, rand_line, line_size);
     // Update read lines
-    this->read_lines_content_size+=1;
     this->read_lines[this->read_lines_content_size]=rand_line;
+    this->read_lines_content_size+=1;
+
     char* scrambled_word = scramble_word(rand_word, line_size[0]);
 
     int cnt = 0;
-    bool* correct_words = new bool[line_size[0]];
-    for (int i=0; i<line_size[0]-1; i++){
+    bool* correct_characters = new bool[line_size[0]];
+    for (int i=0; i<line_size[0]; i++){
         if (rand_word[i]==scrambled_word[i]){
-            correct_words[i]=true;
+            correct_characters[i]=true;
             cnt++;
         }
         else{
-            correct_words[i]=false;
+            correct_characters[i]=false;
         }
     }
     // Create GuessWord object
@@ -337,7 +334,7 @@ void WordReader::fetchWord() {
     guess_word->scrambled_word = scrambled_word;
     guess_word->word = rand_word;
     guess_word->word_size = line_size[0];
-    guess_word->correct_letters = correct_words;
+    guess_word->correct_letters = correct_characters;
     guess_word->initially_correct_letters = cnt;
     this->latest_word = guess_word;
     delete line_size;
@@ -349,7 +346,8 @@ void WordReader::reset() {
     delete this->latest_word->scrambled_word;
     delete this->latest_word->word;
     delete this->latest_word->correct_letters;
-    delete this->latest_word;
+    this->read_lines_content_size=0;
+    this->read_lines_size = 20;
     this->latest_word = nullptr;
     int* init_read_lines = new int[20];
     this->read_lines = init_read_lines;
@@ -425,4 +423,11 @@ void WordReader::switchWordlist(int index_of_list) {
     }
     this->current_wordlist = this->available_word_lists[index_of_list];
     load_file_presets(*this);
+}
+
+bool WordReader::remainingWords() {
+    if (this->read_lines_content_size==this->file_line_count){
+        return false;
+    }
+    return true;
 }

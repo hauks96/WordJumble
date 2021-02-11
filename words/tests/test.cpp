@@ -141,6 +141,17 @@ int main(){
     if (!error){
         std::cout << "OK" << std::endl;
     }
+    /* REMAINING WORDS TEST */
+    error=false;
+    std::cout << "TESTING: WordReader.remainingWords() - ";
+    word_reader.fetchWord();
+    if (word_reader.remainingWords()){
+        std::cout << "ERROR: Remaining words should be zero but are not." << std::endl;
+        error=true;
+    }
+    if (!error){
+        std::cout << "OK" << std::endl;
+    }
 
     return 0;
 }

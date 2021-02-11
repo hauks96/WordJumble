@@ -168,7 +168,7 @@ int get_string_size(char* string){
     return size;
 }
 
-void OutputManager::_init_output_manager(GameType& game_type) {
+void OutputManager::init_output_manager(GameType& game_type) {
     this->current_game = game_type.name();
     char** new_frame = new char*[SCREEN_HEIGHT];
     for (int i=0; i<SCREEN_HEIGHT; i++){
@@ -310,7 +310,7 @@ void OutputManager::add_message(char *message, bool print) {
     }
 }
 
-void OutputManager::word_lists(char **word_lists, char *current_wordlist, int word_lists_size) {
+void OutputManager::word_lists(char **word_lists, char *current_wordlist, int word_lists_size, char* msg) {
     /* Desired outcome example
      0 " -------------------------------------------------------------------------- "
      1 "|   Current wordlist:                                                      |"
@@ -344,8 +344,7 @@ void OutputManager::word_lists(char **word_lists, char *current_wordlist, int wo
     int back_row = 11;
     replace_centered(this->frame, back, 8, back_row);
     // Message
-    char msg[] = "ENTER NUMBER OF DESIRED LIST TO SELECT IT";
-    replace_centered(this->frame,msg, get_string_size(msg), MESSAGE_ROW);
+    replace_centered(this->frame, msg, get_string_size(msg), MESSAGE_ROW);
 
     int list_start_index_left = 10;
 
@@ -382,6 +381,7 @@ void OutputManager::gameOver() {
     for (int i=start_row; i<end_row_plus_1; i++){
         strcpy(this->frame[i], EMPTY_LINE);
     }
+    print_frames(this->frame);
 }
 
 void OutputManager::updateLives(int lives, bool print) {

@@ -25,9 +25,8 @@ GameManager::GameManager() {
     this->words.init_word_reader(this->settings.default_wordlist);
     GameType* init_type = new GuessUntilZero();
     this->type = init_type;
-    this->user._init_output_manager(*init_type);
+    this->user.init_output_manager(*init_type);
     this->game_over = false;
-    this->start();
 }
 
 void GameManager::start() {
@@ -53,6 +52,10 @@ void GameManager::start() {
             // Go back to start menu
             this->user.start();
             this->game_over=false;
+        }
+        // Exit game
+        else if (strcmp(input_string, "Q")==0){
+            return;
         }
         // Switch game mode
         else if (strcmp(input_string, "S")==0){
@@ -95,7 +98,6 @@ void GameManager::play(){
 
     char input_string[256];
     while(true){
-        std::cout << "Current multiplier: " << this->score.getCurrentMultiplier() << std::endl;
         std::cin >> input_string;
         if (strcmp("B", input_string)==0){
             // Add to highscores
@@ -107,52 +109,14 @@ void GameManager::play(){
         }
         // Get a guess word from user
         else if (strcmp("G", input_string)==0){
-            std::cin >> input_string;
-            // If the word was correct
-            if (this->words.latest_word->isEqual(input_string)){
-                bool game_over = checkGameOver(*this);
-                char msg[] = "CORRECT!";
-                this->user.add_message(msg, false);
-                if (game_over){
-                    this->score.updateScore(*this->words.latest_word, this->time);
-                    this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(), this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), false);
-                    this->user.add_message(msg, false);
-                    this->user.gameOver();
-                    this->game_over=true;
-                    return;
-                }
-                nextWord();
-            }
-            // If the word was incorrect
-            else {
-                this->score.decreasePoints(1);
-                this->user.updateLives(this->score.getCurrentPoints(), false);
-                char msg[] = "INCORRECT!";
-                bool game_over = checkGameOver(*this);
-                if (game_over){
-                    this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(), this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), false);
-                    this->user.add_message(msg, false);
-                    this->user.gameOver();
-                    this->game_over=true;
-                    return;
-                }else{
-                    this->user.add_message(msg, true);
-                }
+            this->guess();
+            if (this->game_over){
+                return;
             }
         }
         // Give user a hint
         else if (strcmp(input_string, "H")==0){
-            // If a new hint would end game don't add the hint
-            if (this->score.getCurrentPoints()==1){
-                char msg[]="Only one live left! Cannot add a new hint.";
-                this->user.add_message(msg, true);
-            }
-            // Add hint
-            else {
-                this->score.decreasePoints(1);
-                this->words.addHint();
-                this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(), this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), true);
-            }
+            this->getHint();
         }
         // Command not recognized
         else {
@@ -167,7 +131,9 @@ void GameManager::nextWord() {
         std::cout << "WARNING: Less than zero lives left." << std::endl;
         std::runtime_error("Less than 0 lives left when play was called");
     }
-    this->score.updateScore(*this->words.latest_word, this->time);
+    if (!this->words.remainingWords()){
+        return;
+    }
     this->time.reset_time();
     this->words.fetchWord();
     this->time.start_time();
@@ -198,22 +164,93 @@ void GameManager::switchGameMode() {
 }
 
 void GameManager::selectWordList() {
-    this->user.word_lists(this->words.availableWordLists(), this->words.currentWordList(), this->words.availableWordListSize());
+    char msg[] = "Enter number of desired wordlist to select it.";
+    this->user.word_lists(this->words.availableWordLists(), this->words.currentWordList(), this->words.availableWordListSize(), msg);
     char input_string[256];
     while(true){
         std::cin >> input_string;
         if (strcmp(input_string, "B")==0){
             return;
         }
-        else if ((atoi (input_string))>this->words.availableWordListSize()){
+        else if ((atoi (input_string))<this->words.availableWordListSize()+1){
             int idx = (atoi (input_string))-1;
             this->words.switchWordlist(idx);
             char msg[]="Word list switched!";
-            this->user.add_message(msg, false);
-            this->user.word_lists(this->words.availableWordLists(), this->words.currentWordList(), this->words.availableWordListSize());
+            this->user.word_lists(this->words.availableWordLists(), this->words.currentWordList(), this->words.availableWordListSize(), msg);
         }
         else {
             char msg[] = "Command not recognized!";
+            this->user.word_lists(this->words.availableWordLists(), this->words.currentWordList(), this->words.availableWordListSize(), msg);
+        }
+    }
+}
+
+void GameManager::getHint() {
+    if (strcmp(this->words.latest_word->scrambled_word, this->words.latest_word->word)==0){
+        char msg[] = "Word is already correct you egg!";
+        this->user.add_message(msg, true);
+        return;
+    }
+    // If a new hint would end game don't add the hint
+    if (this->score.getCurrentPoints()==1){
+        char msg[]="Only one live left! Cannot add a new hint.";
+        this->user.add_message(msg, true);
+        return;
+    }
+        // Add hint
+    else {
+        char msg[]="Hint added!";
+        this->user.add_message(msg, false);
+        this->score.decreasePoints(1);
+        this->words.addHint();
+        this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(), this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), true);
+    }
+}
+
+void GameManager::guess() {
+    char guess_msg[] = "Enter your guess!";
+    this->user.add_message(guess_msg, true);
+    char input_string[256];
+    std::cin >> input_string;
+    // If the word was correct
+    if (this->words.latest_word->isEqual(input_string)){
+        this->score.updateScore(*this->words.latest_word, this->time);
+        this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(), this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), false);
+        bool game_over = checkGameOver(*this);
+        char msg[] = "CORRECT!";
+        this->user.add_message(msg, false);
+        if (game_over){
+            this->user.add_message(msg, false);
+            this->user.gameOver();
+            this->game_over=true;
+            return;
+        }
+        else if (!this->words.remainingWords()){
+            char msg[] = "No more words in wordlist!";
+            this->user.add_message(msg, false);
+            this->user.gameOver();
+            this->score.reset();
+            this->time.reset_time();
+            this->words.reset();
+            this->game_over=true;
+            return;
+        }
+        nextWord();
+        return;
+    }
+        // If the word was incorrect
+    else {
+        this->score.decreasePoints(1);
+        this->user.updateLives(this->score.getCurrentPoints(), false);
+        char msg[] = "INCORRECT!";
+        this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(), this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), false);
+        this->user.add_message(msg, false);
+        bool game_over = checkGameOver(*this);
+        if (game_over){
+            this->user.gameOver();
+            this->game_over=true;
+            return;
+        }else{
             this->user.add_message(msg, true);
         }
     }

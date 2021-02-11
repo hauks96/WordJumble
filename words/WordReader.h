@@ -24,6 +24,8 @@ public:
     char** availableWordLists() const;
     // Get size of available word list
     int availableWordListSize() const;
+    // Check if there are any words left to play
+    bool remainingWords();
     // Get a single GuessWord
     void fetchWord();
     // Add a hint to the scrambled word

@@ -28,8 +28,6 @@ public:
     void switchGameMode();
     // Start menu
     void start();
-    // Goodbye message
-    void end();
     // Guess the current word (in game)
     void guess();
     // Get a hint on the current word (in game)

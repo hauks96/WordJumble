@@ -29,11 +29,9 @@ class OutputManager {
     friend void print_frame(char** frames);
 public:
     // initialize the class with default values
-    void _init_output_manager(GameType& game_type);
+    void init_output_manager(GameType& game_type);
     // Prints the start screen
     void start();
-    // Prints the quit message
-    void end();
     // Prints the in game view
     void play(char* current_game_mode, GuessWord& gw, int score, double mp, int lives, bool print);
     // Print game over screen
@@ -47,7 +45,7 @@ public:
     // Switch game
     void switch_game(GameType& game_type);
     // Switch wordlist
-    void word_lists(char** word_lists, char* current_wordlist, int word_lists_size);
+    void word_lists(char** word_lists, char* current_wordlist, int word_lists_size, char* msg);
 private:
     void reset_frames();
     bool inGame;
