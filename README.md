@@ -26,7 +26,7 @@ $ chmod +x run.sh
 **Word list selection**\
 ![image](images/wordlists.PNG) \
 **Switch game mode** \
-![image](images/switchgame.PNG)
+![image](images/gamemode.PNG)
 
 ## How to add wordlist to the game
 1. Create a new text file with a descriptive name in the root directory with the file ending `.txt`
