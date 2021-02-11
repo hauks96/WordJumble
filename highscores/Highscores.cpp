@@ -158,8 +158,11 @@ char*** Highscores::getHighscores(int howMany, bool all){
     if (all){
         howMany = this->number_of_highscores;
     }
+    if (howMany>this->number_of_highscores){
+        std::cout << "TOO MANY NUMBERS REQUESTED!" << std::endl;
+        std::runtime_error("Out of bounds highscore request");
+    }
     char*** highscores = new char**[howMany];
-    std::cout << "HOWMANY: " << howMany << std::endl;
     f_in.open("highscore.txt");
     if (!f_in.is_open()){
         std::cout << "File not found." << std::endl;
@@ -171,7 +174,7 @@ char*** Highscores::getHighscores(int howMany, bool all){
     }
     int curr_line = 0;
     char line_buffer[MAX_LINE_SIZE];
-    while(curr_line<howMany && !f_in.eof()){
+    for (int i=0; i<howMany; i++){
         f_in.getline(line_buffer, MAX_LINE_SIZE);
         if (line_buffer[0]=='\0'){
             return highscores;
@@ -180,22 +183,22 @@ char*** Highscores::getHighscores(int howMany, bool all){
         char* username_temp = getUsername(line_buffer);
         char* username = new char[get_string_size(username_temp)];
         strcpy(username, username_temp);
-        std::cout << "Username: " << username << std::endl;
+        //std::cout << "Username: " << username << std::endl;
         char* wordList = getWordlist(line_buffer);
-        std::cout << "Wordlist: " << wordList << std::endl;
+        //std::cout << "Wordlist: " << wordList << std::endl;
         char* charsCorrected = getCharsCorrected(line_buffer);
-        std::cout << "Chars corrected: " << charsCorrected<< std::endl;
+        //std::cout << "Chars corrected: " << charsCorrected<< std::endl;
         char* correctWords = getCorrectWords(line_buffer);
-        std::cout << "Words corrected: " << correctWords << std::endl;
+        //std::cout << "Words corrected: " << correctWords << std::endl;
         char* score = getScore(line_buffer);
-        std::cout << "Score: " << score << std::endl;
+        //std::cout << "Score: " << score << std::endl;
         columns[USERNAME_DELIMITER_NR]=username;
         columns[SCORE_DELIMITER_NR]=score;
         columns[WORDLIST_DELIMITER_NR]=wordList;
         columns[CORR_CHARS_DELIMITER_NR]=charsCorrected;
         columns[CORR_WORDS_DELIMITER_NR]=correctWords;
         highscores[curr_line]=columns;
-
+        curr_line++;
     }
     f_in.close();
     return highscores;
