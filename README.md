@@ -25,6 +25,11 @@ $ chmod +x run.sh
 2. Add words to the text file. (If you don't add anything the program will terminate with a warning message when you select it)
 3. Add the name of the file **without the file ending `.txt`** into the text file called `word_lists.txt` also located in the root directory.
 
+## Score calculations
+1. For each word guessed correctly a user receives a base score of 500
+2. For each letter that had to be corrected in the word a user gets an additional score of 100
+3. If the word is guessed correctly within 20 seconds, the multiplier is increased by 0.5. If the user guesses incorrectly or requests a hint the multiplier is set back to 1.
+
 ## Demonstration
 **Start menu**\
 ![image](images/mainmenu.PNG) \
