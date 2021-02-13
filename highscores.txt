@@ -6,3 +6,6 @@
 3350,someuser,programming,2,9
 3000,User,programming,2,7
 2850,hauksson,random,2,6
+600,user,programming,3,8
+900,user,programming,7,12
+0,user,programming,0,0

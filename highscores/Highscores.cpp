@@ -59,7 +59,7 @@ char* getLineBufferDelimited(char* line, int delimiter){
             }
             else if (line_char=='\0'){
                 std::cout << "WARNING: Reached end of line while trying to fetch on delimiter " << delimiter << std::endl;
-                std::runtime_error("End of line reached without return.");
+                throw std::runtime_error("End of line reached without return.");
             }
             /* We didn't find find our desired column so we reset the values
              * of the buffer and start writing into it again */
@@ -164,7 +164,7 @@ char*** Highscores::getHighscores(int howMany, bool all){
     // If the number exceeds the available highscores
     if (howMany>this->number_of_highscores){
         std::cout << "TOO MANY NUMBERS REQUESTED!" << std::endl;
-        std::runtime_error("Out of bounds highscore request");
+        throw std::runtime_error("Out of bounds highscore request");
     }
     // create a new highscores array that contains all the data from the file
     char*** highscores = new char**[howMany];
@@ -172,7 +172,7 @@ char*** Highscores::getHighscores(int howMany, bool all){
     // if the file is not found stop runtime
     if (!f_in.is_open()){
         std::cout << "File not found." << std::endl;
-        std::runtime_error("File was not found");
+        throw std::runtime_error("File was not found");
     }
     // there are no highscores, return a null pointer
     if (f_in.eof()){
@@ -215,7 +215,7 @@ void Highscores::addHighscore(int score, char* username, char* wordlist, int cor
     // if the file isnt open stop the runtime of the program
     if (!f_in.is_open()){
         std::cout << "File not found." << std::endl;
-        std::runtime_error("File was not found");
+        throw std::runtime_error("File was not found");
     }
 
     // Reset pointer with seekg
@@ -225,7 +225,7 @@ void Highscores::addHighscore(int score, char* username, char* wordlist, int cor
     for (int i=0; i<this->number_of_highscores; i++){
         if (f_in.eof()){
             std::cout << "WARNING: Unexpected end of file." << std::endl;
-            std::runtime_error("File end while trying to read line");
+            throw std::runtime_error("File end while trying to read line");
         }
         // read a line
         f_in.getline(line_buffer, MAX_LINE_SIZE);
@@ -281,7 +281,7 @@ void Highscores::init_highscores(char *filename) {
     f_in.open(filename);
     if (!f_in.is_open()){
         std::cout << "HIGHSCORE FILE NOT FOUND!" << std::endl;
-        std::runtime_error("FILE NOT FOUND!");
+        throw std::runtime_error("FILE NOT FOUND!");
         return;
     }
     int cnt_lines = 0;

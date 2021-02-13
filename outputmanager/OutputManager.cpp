@@ -499,6 +499,7 @@ void OutputManager::highscores(char*** highscores_array, int max_number, int num
                 new_msg[i+2+size_msg]='\0';
                 break;
             }
+            new_msg[i+size_msg]=buffer[i];
         }
         replace_centered(this->frame, new_msg, get_string_size(new_msg), 2);
 

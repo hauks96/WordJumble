@@ -77,6 +77,10 @@ std::ifstream* get_filestream(char* filename){
     // Try to open the file
     std::ifstream* f_in = new std::ifstream();
     f_in->open(temp_filename, std::ios::in);
+    if (f_in->peek() == std::ifstream::traits_type::eof()){
+        std::cout << "WARNING: File has no contents. Terminating program." << std::endl;
+        throw std::runtime_error("Empty file");
+    }
     if (!f_in->is_open()){
         std::cout << "WARNING: File with name " << temp_filename << " is not located in the words directory or does not exist." << std::endl;
         throw std::runtime_error("File does not exist.");
@@ -120,7 +124,7 @@ void load_file_presets(WordReader& self){
     f_in.close();
     if (cnt_lines==0){
         std::cout << "WARNING: The word file with name " << self.current_wordlist << " does not contain any words!" << std::endl;
-        std::runtime_error("No words in file.");
+        throw std::runtime_error("No words in file.");
     }
     delete f_in_ptr;
 }
@@ -218,6 +222,10 @@ void WordReader::init_word_reader(char* default_wordlist) {
         f_in.getline(line_buffer, MAX_LINE_LENGTH);
         num_lines++;
     }
+    if (num_lines == 0){
+        std::cout << "WARNING: No words in current wordlist!" << std::endl;
+        throw std::runtime_error("Empty file");
+    }
     f_in.seekg(0, std::ios::beg);
     char ** word_lists = new char* [num_lines];
     int line_cnt = 0;
@@ -259,9 +267,13 @@ char ** WordReader::availableWordLists() const {
 
 // Fetch a new word
 void WordReader::fetchWord() {
+    if (this->file_line_count==0){
+        std::cout << "WARNING: The selected wordlist has no words in it." << std::endl;
+        throw std::runtime_error("Empty file");
+    }
     if (this->read_lines_content_size==this->file_line_count){
         std::cout << "WARNING: Word list has been completed. No more words available" << std::endl;
-        std::runtime_error("No more words to play.");
+        throw std::runtime_error("No more words to play.");
     }
     // Remove the last word fetched
     if (this->latest_word != nullptr){

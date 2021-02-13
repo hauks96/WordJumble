@@ -122,12 +122,20 @@ bool checkGameOver(GameManager& gm){
 }
 
 void GameManager::play(){
+    std::cout << "Available word lists: ";
+    for (int i=0; i<this->words.availableWordListSize(); i++){
+        char ** wls = words.availableWordLists();
+        std::cout << wls[i] << ", ";
+    }
+    std::cout << std::endl;
     if (this->score.getCurrentPoints()<=0){
         std::cout << "WARNING: Less than zero lives left." << std::endl;
-        std::runtime_error("Less than 0 lives left when play was called");
+        throw std::runtime_error("Less than 0 lives left when play was called");
     }
     this->time.start_time();
+    std::cout << "Fetching a word." << std::endl;
     this->words.fetchWord();
+    std::cout << "Done fetching word." << std::endl;
     this->user.play(this->type->name(), *this->words.latest_word, this->score.getCurrentScore(),
                     this->score.getCurrentMultiplier(), this->score.getCurrentPoints(), true);
 
@@ -136,9 +144,11 @@ void GameManager::play(){
         std::cin >> input_string;
         if (strcmp("B", input_string)==0){
             // Add to highscores
-            this->highscores.addHighscore(this->score.getCurrentScore(), this->username,
-                                          this->words.currentWordList(), this->score.guessed_words,
-                                          this->score.characters_corrected);
+            if (this->score.getCurrentScore()>0){
+                this->highscores.addHighscore(this->score.getCurrentScore(), this->username,
+                                              this->words.currentWordList(), this->score.guessed_words,
+                                              this->score.characters_corrected);
+            }
             // Reset everything that needs resetting
             this->score.reset();
             this->time.reset_time();
@@ -167,7 +177,7 @@ void GameManager::play(){
 void GameManager::nextWord() {
     if (this->score.getCurrentPoints()<=0){
         std::cout << "WARNING: Less than zero lives left." << std::endl;
-        std::runtime_error("Less than 0 lives left when play was called");
+        throw std::runtime_error("Less than 0 lives left when play was called");
     }
     if (!this->words.remainingWords()){
         return;
@@ -204,7 +214,7 @@ void GameManager::switchGameMode() {
     }
     else {
         std::cout << "WARNING: Game type did not match any predefined game modes." << std::endl;
-        std::runtime_error("Game type not found");
+        throw std::runtime_error("Game type not found");
     }
 }
 
@@ -323,6 +333,7 @@ void GameManager::guess() {
 
 void GameManager::getHighscores() {
     int max_number = this->highscores.numberOfHighscores();
+    std::cout << "MAX NUMBER: " << max_number << std::endl;
     this->user.highscores(nullptr, max_number, 0, true);
     char input_string[256];
     while(true){
